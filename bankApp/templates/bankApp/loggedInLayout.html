@@ -1,0 +1,66 @@
+{% extends './layout.html'%}
+{% load staticfiles %}
+{%block body%}
+    <!-- navbar-->
+    <header class="header">
+      <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a href="#" class="sidebar-toggler text-gray-500 mr-4 mr-lg-5 lead"><i class="fas fa-align-left"></i></a><a href="index.html" class="navbar-brand font-weight-bold text-uppercase text-base">Bank Application</a>
+        <ul class="ml-auto d-flex align-items-center list-unstyled mb-0">
+          <li class="nav-item dropdown ml-auto"><a id="userInfo" href="http://example.com" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle"><i class="o-user-1 mr-3 text-gray"></i></a>
+            <div aria-labelledby="userInfo" class="dropdown-menu"><a href="#" class="dropdown-item"><strong class="d-block text-uppercase headings-font-family">{{user.first_name}} {{user.last_name}} </strong><small>Bank {{user.bankuser.bankrole}}</small></a>
+              <div class="dropdown-divider"></div><a href="#" class="dropdown-item">Settings</a><a href="#" class="dropdown-item">Activity log       </a>
+              <div class="dropdown-divider"></div><a href="{%url 'logout'%}" class="dropdown-item">Logout</a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- HEADER ENDS HEADER HERE  -->
+    <!-- SIDEBAR STARTS HERE -->
+    <div class="d-flex align-items-stretch">
+      <div id="sidebar" class="sidebar py-3">
+        <div class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family">MAIN</div>
+        <ul class="sidebar-menu list-unstyled">
+              <li class="sidebar-list-item"><a href="{% url 'homePage' %}" class="sidebar-link text-muted {{home}}"><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></a></li>
+              <li class="sidebar-list-item"><a href="{% url 'withdrawPage' %}" class="sidebar-link text-muted {{withdraw}}"><i class="o-sales-up-1 mr-3 text-gray"></i><span>Withdraw</span></a></li>
+              <li class="sidebar-list-item"><a href="{% url 'depositPage' %}" class="sidebar-link text-muted {{deposit}}"><i class="o-table-content-1 mr-3 text-gray"></i><span>Deposit</span></a></li>
+              <li class="sidebar-list-item"><a href="{% url 'transferPage' %}" class="sidebar-link text-muted {{transfer}}"><i class="o-survey-1 mr-3 text-gray"></i><span>Transfer</span></a></li>
+              <li class="sidebar-list-item"><a href="{% url 'logout' %}" class="sidebar-link text-muted"><i class="o-exit-1 mr-3 text-gray"></i><span>Logout</span></a></li>
+        </ul>
+      
+   
+      </div>
+      
+      <!-- SIDEBAR ENDS HERE -->
+
+      <div class="page-holder w-100 d-flex flex-wrap">
+        <div class="container-fluid px-xl-5">
+         <!-- SECTIONS PUT HERE -->
+         <!-- ALL SECTIONS HAVE A CLASS OF 'py-5' -->
+         {%block sections%}
+         {%endblock%}
+
+
+           
+         
+
+
+        </div>
+
+        <!-- FOOTER BEGINS HERE -->
+        <footer class="footer bg-white shadow align-self-end py-3 px-xl-5 w-100">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6 text-center text-md-left text-primary">
+                <p class="mb-2 mb-md-0">Bank Application</p>
+              </div>
+              <div class="col-md-6 text-center text-md-right text-gray-400">
+                <p class="mb-0">Design by Kiwanuka Patrick</p>
+                
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    {%endblock%}

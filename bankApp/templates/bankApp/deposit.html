@@ -1,0 +1,34 @@
+{% extends './loggedInLayout.html'%}
+{% load staticfiles %}
+
+{%block sections%}
+    <section style="padding-top:20px">
+      <div class="row mb-4">
+        <div class="col-lg-9 mb-0 mb-lg-0">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="h6 text-uppercase mb-0">Iniatiate cash deposit</h2>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                      <label class="form-control-label text-uppercase">Account number</label>
+                      <input type="number" name="accountNumber" placeholder="Enter the account number" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-control-label text-uppercase">Amount</label>
+                        <input type="number" name="amount" placeholder="Enter the amount in Uganda Shillings" class="form-control" required>
+                    </div>
+
+                    <input type="hidden" name="bankUser" value={{user.bankuser.id}}>
+                    <div class="form-group">       
+                      <button type="submit" class="btn btn-primary">Deposit</button>
+                    </div>
+                  </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{%endblock%}

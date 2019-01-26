@@ -1,0 +1,71 @@
+{% extends './loggedInLayout.html'%}
+{% load staticfiles %}
+
+{%block sections%}
+    <section style="padding-top:20px">
+      <div class="row mb-4">
+        <div class="col-lg-9 mb-0 mb-lg-0">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="h6 text-uppercase mb-0">Hello {{user.first_name}}</h2>
+            </div>
+            <div class="card-body">
+              <p class="text-gray">You can create a new bank account here</p>
+              <a href="{% url 'newCustomer' %}"><button class="btn btn-primary">Create new bank account</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    {%if successmsg%}
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Success!!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>{{successmsg}}</p>
+            <ul>
+              <li>Account Number: {{accountNumber}}</li>
+              <li>Name: {{name}}</li>
+              <li>Account Type: {{accountType}}</li>
+              <li>Branch: {{branch}}</li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {%endif%}
+    {%if error%}
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="color:red">Failed to create account!!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>{{error}}</p>
+            
+          </div>
+          <div class="modal-footer">
+            
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {%endif%}
+
+{%endblock%}

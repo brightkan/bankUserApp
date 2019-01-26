@@ -1,0 +1,81 @@
+{% extends './loggedInLayout.html'%}
+{% load staticfiles %}
+
+{%block sections%}
+    <section style="padding-top:20px">
+      <div class="row mb-4">
+        <div class="col-lg-9 mb-0 mb-lg-0">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="h6 text-uppercase mb-0">Iniatiate cash withdraw</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" action={%url 'initiateWithdraw'%}>
+                  {%csrf_token%}
+                    <div class="form-group">
+                      <label class="form-control-label text-uppercase">Account number</label>
+                      <input type="number" name="accountNumber" placeholder="Enter the account number" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-control-label text-uppercase">Amount</label>
+                        <input type="number" name="amount" placeholder="Enter the amount in Uganda Shillings" class="form-control" required>
+                    </div>
+                    <input type="hidden" name="bankUser" value={{user.bankuser.id}}>
+                 
+                    <div class="form-group">       
+                      <button type="submit" class="btn btn-primary">Withdraw</button>
+                    </div>
+                  </form>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    {%if successMsg%}
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Success!!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button></a>
+          </div>
+          <div class="modal-body">
+            <p>{{successMsg}} {{amount}}</p>
+            <p>The balance of account {{account}} is UGX {{balance}}</p>
+          </div>
+          <div class="modal-footer">
+            
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {%endif%}
+    {%if error%}
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="color:red">Failed to create account!!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>{{error}}</p>
+            
+          </div>
+          <div class="modal-footer">
+            
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {%endif%}
+{%endblock%}
