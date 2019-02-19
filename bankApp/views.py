@@ -172,7 +172,7 @@ def initiateWithdraw(request):
        #Fetching data from the withdrawPage form 
        accountNumber = int(request.POST['accountNumber'])
        amount = int(request.POST['amount'])
-       bankUserID = int(request.POST['bankUser'])
+       bankUserID = request.POST['bankUser']
 
        #Get the bank account object
        try:
