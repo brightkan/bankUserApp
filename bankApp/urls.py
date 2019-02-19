@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^logout$', views.logout_view, name='logout'),
     url(r'^createCustomer$', views.createCustomer, name='createCustomer'),
     url(r'^initiateWithdraw$', views.initiateWithdraw, name='initiateWithdraw'),
+    url(r'^confirmWithdraw$', views.confirmWithdraw, name='confirmWithdraw'),
 
     
 ]

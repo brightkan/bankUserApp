@@ -1,0 +1,38 @@
+{% extends './loggedInLayout.html'%}
+{% load staticfiles %}
+
+{%block sections%}
+    <section style="padding-top:20px">
+      <div class="row mb-4">
+        <div class="col-lg-9 mb-0 mb-lg-0">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="h6 text-uppercase mb-0" >Confirm</h2>
+            </div>
+            <div class="card-body">
+                <p>{{Msg}}</p>
+                <h3>Customer Details</h3>
+                <table border="1" cellpadding="10">
+                  <tr><td>Customer Name</td><td>{{customerName}}</td></tr>
+                  <!-- <tr><td>Customer Balance</td><td>{{balance}}</td></tr> -->
+                  <tr><td>Mobile</td><td>{{customerMobile}}</td></tr>
+                  <tr><td>Sex</td><td>{{customerSex}}</td></tr>
+                  <tr><td>Account Type</td><td>{{accountType}}</td></tr>
+                  <tr><td>Branch of Registration</td><td>{{branchOfReg}}</td></tr>
+                </table>
+                
+                <!-- <form action="{% url initiateWithdraw %}">
+                  <input type="hidden" name="bankUser" value={{user.bankuser.id}}>
+                </form> -->
+
+                <a href="{%url 'homePage'%}"><button type="button" class="btn btn-secondary">Back</button></a>
+                
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+{%endblock%}

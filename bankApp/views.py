@@ -159,6 +159,53 @@ def createCustomer(request):
 
 
 
+# Confirm withdraw
+def confirmWithdraw(request):
+    
+    #This line requires a user to perform a POST request
+    if request.method == 'POST':
+       #Fetching data from the withdrawPage form 
+       accountNumber = int(request.POST['accountNumber'])
+       amount = int(request.POST['amount'])
+       bankUserID = request.POST['bankUser']
+
+       #Get the bank account object
+       try:
+           bankAccount = Account.objects.get(pk=accountNumber)
+
+           context = {
+           "bankUserId": bankUserID,
+           "accountNumber": accountNumber,
+           "amount":amount,
+           "customerName": bankAccount.customer,
+           "balance": bankAccount.balance,
+           "customerMobile":bankAccount.customer.mobile,
+           "customerSex": bankAccount.customer.sex,
+           "accountType": bankAccount.accountType,
+           "branchOfReg": bankAccount.branchOfReg,
+           "Msg": "Are you sure you want to withdraw UGX {} from customer with customer details below?".format(amount)
+            }
+           
+           return render(request, 'bankApp/confirm.html', context)
+
+       except Account.DoesNotExist:
+            failedMsg = "The account number provided does not exist"
+            context = {
+            "failedMsg":failedMsg
+                }   
+            return render(request,"bankApp/failed.html",context)
+
+    #If the request method is not POST. Redirect the user back to the withdraw page  
+    return HttpResponseRedirect(reverse('withdrawPage'))
+       
+       
+        
+       
+
+
+    
+
+
 # Withdraw Transaction logic
 
 def initiateWithdraw(request):
