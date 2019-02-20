@@ -2,5 +2,5 @@
 *.pyc
 *.sqlite
 # vscode settings
-.vscode
+/.vscode
 
