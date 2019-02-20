@@ -10,7 +10,7 @@
               <h2 class="h6 text-uppercase mb-0">Iniatiate cash withdraw</h2>
             </div>
             <div class="card-body">
-                <form method="post" action = {% url 'confirmWithdraw' %} >
+                <form method="post" action = {%url 'confirmWithdraw' %} >
                   {%csrf_token%}
                     <div class="form-group">
                       <label class="form-control-label text-uppercase">Account number</label>

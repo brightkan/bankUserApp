@@ -13,19 +13,25 @@
                 <p>{{Msg}}</p>
                 <h3>Customer Details</h3>
                 <table border="1" cellpadding="10">
-                  <tr><td>Customer Name</td><td>{{customerName}}</td></tr>
-                  <!-- <tr><td>Customer Balance</td><td>{{balance}}</td></tr> -->
-                  <tr><td>Mobile</td><td>{{customerMobile}}</td></tr>
-                  <tr><td>Sex</td><td>{{customerSex}}</td></tr>
-                  <tr><td>Account Type</td><td>{{accountType}}</td></tr>
-                  <tr><td>Branch of Registration</td><td>{{branchOfReg}}</td></tr>
+                  <tr><td><strong>Customer Name</strong></td><td>{{customerName}}</td></tr>
+                  <tr><td><strong>Account balance</strong></td><td>UGX {{balance}}</td></tr>
+                  <tr><td><strong>Mobile</strong></td><td>{{customerMobile}}</td></tr>
+                  <tr><td><strong>Sex</strong></td><td>{{customerSex}}</td></tr>
+                  <tr><td><strong>Account Type</strong></td><td>{{accountType}}</td></tr>
+                  <tr><td><strong>Branch of Registration</strong></td><td>{{branchOfReg}}</td></tr>
                 </table>
-                
-                <!-- <form action="{% url initiateWithdraw %}">
+    
+                <form method="POST" action={%url 'initiateWithdraw'%} style="margin-top:10px">
+                  {%csrf_token%}
                   <input type="hidden" name="bankUser" value={{user.bankuser.id}}>
-                </form> -->
-
-                <a href="{%url 'homePage'%}"><button type="button" class="btn btn-secondary">Back</button></a>
+                  <input type="hidden" name="accountNumber" value={{accountNumber}}>
+                  <input type="hidden" name="amount" value={{amount}}>
+                  <div class="form-group">
+                    <a href="{%url 'homePage'%}"><button type="button" class="btn btn-secondary">Back</button></a>       
+                    <button type="submit" class="btn btn-primary">Withdraw</button>
+                  </div>
+                </form>
+                
                 
 
 
