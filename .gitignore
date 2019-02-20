@@ -1,6 +1,7 @@
 # Compiled source #
 *.pyc
-*.sqlite
+*.sqlite3
+db.sqlite3
 # vscode settings
 .vscode
 
