@@ -20,8 +20,16 @@ def homePage(request):
         "home":"active",
         "user":request.user
     }
+    # If user is a manager
+    user = request.user
 
-    return render(request,"bankApp/home.html",context)
+    if str(user.bankuser.bankrole) == 'Manager':
+        return render(request,"bankApp/manager/home.html", context)
+    
+    if str(user.bankuser.bankrole) == 'Teller':
+        return render(request,"bankApp/home.html",context)
+
+    return HttpResponse("<h1>401 Error</h1> <br>User did not match any available bank roles")
 
 
 def newCustomerPage(request):
@@ -36,7 +44,7 @@ def newCustomerPage(request):
         "user":request.user
     }
 
-    return render(request,"bankApp/newCustomer.html",context)
+    return render(request,"bankApp/manager/newCustomer.html",context)
 
 def withdrawPage(request):
     # The line requires the user to be authenticated before accessing the view responses. 
@@ -199,12 +207,7 @@ def confirmWithdraw(request):
     return HttpResponseRedirect(reverse('withdrawPage'))
        
        
-        
-       
-
-
-    
-
+#####################################################
 
 # Withdraw Transaction logic
 
@@ -256,6 +259,7 @@ def initiateWithdraw(request):
                }
                return render(request,"bankApp/failed.html",context)
 
+           # permit determines whether the app should continue to commit the transaction 
            if permit == 'true': 
                 #Perform the withdraw
                 currentbalance = balance - amount
@@ -294,7 +298,10 @@ def initiateWithdraw(request):
     #If the request method is not POST. Redirect the user back to the withdraw page  
     return HttpResponseRedirect(reverse('withdrawPage'))
 
-# Deposit logic
+###################################################################################
+# DEPOSIT LOGIC
+
+
 
 
 

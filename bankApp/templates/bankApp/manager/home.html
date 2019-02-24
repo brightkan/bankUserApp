@@ -10,9 +10,8 @@
               <h2 class="h6 text-uppercase mb-0">Hello {{user.first_name}}</h2>
             </div>
             <div class="card-body">
-              <p class="text-gray">This is a tellers portal. You can initiate transactions by
-                clicking on the list icon in the right hand top corner.
-              </p>
+              <p class="text-gray">This is a managers portal. You can create a new bank account here</p>
+              <a href="{% url 'newCustomer' %}"><button class="btn btn-primary">Create new bank account</button></a>
             </div>
           </div>
         </div>
