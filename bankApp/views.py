@@ -207,12 +207,7 @@ def confirmWithdraw(request):
     return HttpResponseRedirect(reverse('withdrawPage'))
        
        
-        
-       
-
-
-    
-
+#####################################################
 
 # Withdraw Transaction logic
 
@@ -264,6 +259,7 @@ def initiateWithdraw(request):
                }
                return render(request,"bankApp/failed.html",context)
 
+           # permit determines whether the app should continue to commit the transaction 
            if permit == 'true': 
                 #Perform the withdraw
                 currentbalance = balance - amount
@@ -302,7 +298,10 @@ def initiateWithdraw(request):
     #If the request method is not POST. Redirect the user back to the withdraw page  
     return HttpResponseRedirect(reverse('withdrawPage'))
 
-# Deposit logic
+###################################################################################
+# DEPOSIT LOGIC
+
+
 
 
 
