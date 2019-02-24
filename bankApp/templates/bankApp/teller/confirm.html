@@ -7,7 +7,7 @@
         <div class="col-lg-9 mb-0 mb-lg-0">
           <div class="card">
             <div class="card-header">
-              <h2 class="h6 text-uppercase mb-0" >Confirm</h2>
+              <h2 class="h6 text-uppercase mb-0" >Confirm {{type}}</h2>
             </div>
             <div class="card-body">
                 <p>{{Msg}}</p>
@@ -21,7 +21,7 @@
                   <tr><td><strong>Branch of Registration</strong></td><td>{{branchOfReg}}</td></tr>
                 </table>
     
-                <form method="POST" action={%url 'initiateWithdraw'%} style="margin-top:10px">
+                <form method="POST" action={%url url %} style="margin-top:10px">
                   {%csrf_token%}
                   <input type="hidden" name="bankUser" value={{user.bankuser.id}}>
                   <input type="hidden" name="accountNumber" value={{accountNumber}}>

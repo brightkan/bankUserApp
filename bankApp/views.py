@@ -27,7 +27,7 @@ def homePage(request):
         return render(request,"bankApp/manager/home.html", context)
     
     if str(user.bankuser.bankrole) == 'Teller':
-        return render(request,"bankApp/home.html",context)
+        return render(request,"bankApp/teller/home.html",context)
 
     return HttpResponse("<h1>401 Error</h1> <br>User did not match any available bank roles")
 
@@ -57,7 +57,7 @@ def withdrawPage(request):
         "user":request.user
     }
 
-    return render(request,"bankApp/withdraw.html",context)
+    return render(request,"bankApp/teller/withdraw.html",context)
 
 
 def depositPage(request):
@@ -71,20 +71,20 @@ def depositPage(request):
         "user":request.user
     }
 
-    return render(request,"bankApp/deposit.html",context)
+    return render(request,"bankApp/teller/deposit.html",context)
 
 def transferPage(request):
     # The line requires the user to be authenticated before accessing the view responses. 
     if not request.user.is_authenticated:
         # if the user is not authenticated it renders a login page 
-        return render(request,'bankApp/login.html',{"message":None})
+        return render(request,'bankApp/teller/login.html',{"message":None})
 
     context = {
         "transfer":"active",
         "user":request.user
     }
 
-    return render(request,"bankApp/transfer.html",context)
+    return render(request,"bankApp/teller/transfer.html",context)
 
 
 
@@ -158,12 +158,12 @@ def createCustomer(request):
                 "accountType":at,
                 "branch":branch
             }
-            return render(request,'bankApp/home.html',context)
+            return render(request,'bankApp/manager/home.html',context)
         
         except:
-            return render(request,'bankApp/home.html',{"error":"Something went wrong"})
+            return render(request,'bankApp/manager/home.html',{"error":"Something went wrong"})
     
-    return render(request,'bankApp/home.html',{"error":"You have performed a get request"})
+    return render(request,'bankApp/manager/home.html',{"error":"You have performed a get request"})
 
 
 
@@ -182,6 +182,8 @@ def confirmWithdraw(request):
            bankAccount = Account.objects.get(pk=accountNumber)
 
            context = {
+           "url" : "initiateWithdraw",
+           "type": "Withdraw",
            "bankUserId": bankUserID,
            "accountNumber": accountNumber,
            "amount":amount,
@@ -194,14 +196,14 @@ def confirmWithdraw(request):
            "Msg": "Are you sure you want to withdraw UGX {} from customer with customer details below?".format(amount)
             }
            
-           return render(request, 'bankApp/confirm.html', context)
+           return render(request, 'bankApp/teller/confirm.html', context)
 
        except Account.DoesNotExist:
             failedMsg = "The account number provided does not exist"
             context = {
             "failedMsg":failedMsg
                 }   
-            return render(request,"bankApp/failed.html",context)
+            return render(request,"bankApp/teller/failed.html",context)
 
     #If the request method is not POST. Redirect the user back to the withdraw page  
     return HttpResponseRedirect(reverse('withdrawPage'))
@@ -233,7 +235,7 @@ def initiateWithdraw(request):
             context = {
             "failedMsg":failedMsg
                 }   
-            return render(request,"bankApp/failed.html",context)
+            return render(request,"bankApp/teller/failed.html",context)
 
        #Get the balance on the bank account
        balance = int(bankAccount.balance)
@@ -257,7 +259,7 @@ def initiateWithdraw(request):
                context = {
                    "failedMsg": "The application could not connect to the Jess engine"
                }
-               return render(request,"bankApp/failed.html",context)
+               return render(request,"bankApp/teller/failed.html",context)
 
            # permit determines whether the app should continue to commit the transaction 
            if permit == 'true': 
@@ -280,30 +282,148 @@ def initiateWithdraw(request):
                   'successMsg': successMsg                     
                   }
 
-                return render(request,"bankApp/success.html",context)
+                return render(request,"bankApp/teller/success.html",context)
 
            context = {
                 "failedMsg":resMsg
             }
 
-           return render(request,"bankApp/failed.html",context)
+           return render(request,"bankApp/teller/failed.html",context)
 
         # If the amount is greater than the account balance
        failedMsg = "The account has insuficient balance"
        context = {
             "failedMsg":failedMsg
          }   
-       return render(request,"bankApp/failed.html",context)
+       return render(request,"bankApp/teller/failed.html",context)
         
     #If the request method is not POST. Redirect the user back to the withdraw page  
     return HttpResponseRedirect(reverse('withdrawPage'))
 
 ###################################################################################
 # DEPOSIT LOGIC
+def confirmDeposit(request):
+    
+    #This line requires a user to perform a POST request
+    if request.method == 'POST':
+       #Fetching data from the withdrawPage form 
+       accountNumber = int(request.POST['accountNumber'])
+       amount = int(request.POST['amount'])
+       bankUserID = request.POST['bankUser']
 
+       #Get the bank account object
+       try:
+           bankAccount = Account.objects.get(pk=accountNumber)
 
+           context = {
+           "url" : "initiateDeposit",
+           "type": "Deposit",
+           "bankUserId": bankUserID,
+           "accountNumber": accountNumber,
+           "amount":amount,
+           "customerName": bankAccount.customer,
+           "balance": bankAccount.balance,
+           "customerMobile":bankAccount.customer.mobile,
+           "customerSex": bankAccount.customer.sex,
+           "accountType": bankAccount.accountType,
+           "branchOfReg": bankAccount.branchOfReg,
+           "Msg": "Are you sure you want to deposit UGX {} to the customer account with customer details below?".format(amount)
+            }
+           
+           return render(request, 'bankApp/teller/confirm.html', context)
 
+       except Account.DoesNotExist:
+            failedMsg = "The account number provided does not exist"
+            context = {
+            "failedMsg":failedMsg
+                }   
+            return render(request,"bankApp/teller/failed.html",context)
 
+    #If the request method is not POST. Redirect the user back to the withdraw page  
+    return HttpResponseRedirect(reverse('depositPage'))
+
+# Initiate the deposit transaction
+def initiateDeposit(request):
+    # The line requires the user to be authenticated before accessing the view responses. 
+    if not request.user.is_authenticated:
+        # if the user is not authenticated it renders a login page 
+        return render(request,'bankApp/login.html',{"message":None})
+
+    #This line requires a user to perform a POST request
+    if request.method == 'POST':
+       #Fetching data from the withdrawPage form 
+       accountNumber = int(request.POST['accountNumber'])
+       amount = int(request.POST['amount'])
+       bankUserID = request.POST['bankUser']
+
+       #Get the bank account object
+       try:
+           bankAccount = Account.objects.get(pk=accountNumber)
+
+       except Account.DoesNotExist:
+            failedMsg = "The account number provided does not exist"
+            context = {
+            "failedMsg":failedMsg
+                }   
+            return render(request,"bankApp/teller/failed.html",context)
+
+       #Get the balance on the bank account
+       balance = int(bankAccount.balance)
+       #The Deposit transaction processing
+      
+       #Get Jess approval
+       #Perform a post request to the server
+       headers = {'Content-Type':'application/xml'}
+
+       #Pass in the request data
+       reqData = """<transaction><amount>{}</amount></transaction>""".format(amount)
+
+       #Read the response data in xml
+       try:
+           resData = requests.post('http://localhost:8080/bankApp/rest/api',data=reqData, headers = headers).text.encode("utf-8")
+           tree = ET.fromstring(resData)
+           resMsg = tree.find('resMsg').text
+           permit = tree.find('continue').text
+
+       except:
+           context = {
+                "failedMsg": "The application could not connect to the Jess engine"
+            }
+           return render(request,"bankApp/teller/failed.html",context)
+
+        # permit determines whether the app should continue to commit the transaction 
+       if permit == 'true': 
+           #Perform the deposit
+           currentbalance = balance + amount
+           #Update the current balance
+           bankAccount.balance = currentbalance
+           bankAccount.save()
+           #Create a transaction object
+           #Get a transactiontype object of deposit
+           depositTrans = Transactiontype.objects.get(pk=2)
+           bankUser = BankUser.objects.get(pk=bankUserID)
+           transaction = Transaction(bankUser=bankUser, account=bankAccount,DateTime=datetime.date.today(),amount=amount,transactiontype=depositTrans, creditdebit=0)
+           #Saving the transaction to the database
+           transaction.save()
+        
+           #Setting a success message
+           successMsg = 'You have successfully initiated the deposit of UGX {}. The balance of account {} is UGX {}'.format(amount,bankAccount,bankAccount.balance)
+           context = {
+                'successMsg': successMsg                     
+                }
+
+           return render(request,"bankApp/teller/success.html",context)
+
+       context = {
+            "failedMsg":resMsg
+        }
+
+       return render(request,"bankApp/teller/failed.html",context)
+
+  
+        
+    #If the request method is not POST. Redirect the user back to the withdraw page  
+    return HttpResponseRedirect(reverse('depositPage'))
 
         
     
