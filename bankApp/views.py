@@ -425,9 +425,159 @@ def initiateDeposit(request):
     #If the request method is not POST. Redirect the user back to the withdraw page  
     return HttpResponseRedirect(reverse('depositPage'))
 
+##########################################################
+# TRANSFER LOGIC
+# Confirm transfer
+def confirmTransfer(request):
+    
+    #This line requires a user to perform a POST request
+    if request.method == 'POST':
+       #Fetching data from the withdrawPage form 
+       senderAccountNumber = int(request.POST['senderAccountNumber'])
+       recieverAccountNumber = int(request.POST['recieverAccountNumber'])
+       amount = int(request.POST['amount'])
+       bankUserID = request.POST['bankUser']
+
+       #Get the bank account objects
+       try:
+           
+           senderAccount = Account.objects.get(pk=senderAccountNumber)
+           recieverAccount = Account.objects.get(pk=recieverAccountNumber)
+           reciever = {
+               "name": recieverAccount.customer,
+               "accountNumber": recieverAccount.id,
+               "mobile": recieverAccount.customer.mobile,
+               "sex": recieverAccount.customer.sex,
+               "accountType": recieverAccount.accountType,
+               "branchOfReg": recieverAccount.branchOfReg
+           }
+           context = {
+           "url" : "initiateWithdraw",
+           "type": "Transfer",
+           "bankUserId": bankUserID,
+           "accountNumber": senderAccount,
+           "amount":amount,
+           "customerName": senderAccount.customer,
+           "balance": senderAccount.balance,
+           "customerMobile":senderAccount.customer.mobile,
+           "customerSex": senderAccount.customer.sex,
+           "accountType": senderAccount.accountType,
+           "branchOfReg": senderAccount.branchOfReg,
+           "reciever": reciever,
+           "Msg": "Are you sure you want to transfer UGX {} from customer to account with details below?".format(amount)
+            }
+           
+           return render(request, 'bankApp/teller/confirm.html', context)
+
+       except Account.DoesNotExist:
+            failedMsg = "One of the account numbers provided does not exist"
+            context = {
+            "failedMsg":failedMsg
+                }   
+            return render(request,"bankApp/teller/failed.html",context)
+
+    #If the request method is not POST. Redirect the user back to the withdraw page  
+    return HttpResponseRedirect(reverse('transferPage'))
+
+
+def initiateTransfer(request):
+    # The line requires the user to be authenticated before accessing the view responses. 
+    if not request.user.is_authenticated:
+        # if the user is not authenticated it renders a login page 
+        return render(request,'bankApp/login.html',{"message":None})
+
+    #This line requires a user to perform a POST request
+    if request.method == 'POST':
+       #Fetching data from the withdrawPage form 
+       senderAccountNumber = int(request.POST['senderAccountNumber'])
+       recieverAccountNumber = int(request.POST['recieverAccountNumber'])
+       amount = int(request.POST['amount'])
+       bankUserID = request.POST['bankUser']
+
+       #Get the bank account object
+       try:
+           senderAccount = Account.objects.get(pk=senderAccountNumber)
+           recieverAccount = Account.objects.get(pk=recieverAccountNumber)
+
+       except Account.DoesNotExist:
+            failedMsg = "The account number provided does not exist"
+            context = {
+            "failedMsg":failedMsg
+                }   
+            return render(request,"bankApp/teller/failed.html",context)
+
+       #Get the balance on the sender's bank account
+       senderbalance = int(senderAccount.balance)
+       recieverbalance = int(recieverAccount.balance)
+       #The Transfer transaction processing
+       if amount < senderbalance:
+           #Get Jess approval
+           #Perform a post request to the server
+           headers = {'Content-Type':'application/xml'}
+
+           #Pass in the request data
+           reqData = """<transaction><amount>{}</amount></transaction>""".format(amount)
+
+           #Read the response data in xml
+           try:
+               resData = requests.post('http://localhost:8080/bankApp/rest/api',data=reqData, headers = headers).text.encode("utf-8")
+               tree = ET.fromstring(resData)
+               resMsg = tree.find('resMsg').text
+               permit = tree.find('continue').text
+
+           except:
+               context = {
+                   "failedMsg": "The application could not connect to the Jess engine"
+               }
+               return render(request,"bankApp/teller/failed.html",context)
+
+           # permit determines whether the app should continue to commit the transaction 
+           if permit == 'true': 
+                #Perform the transfer
+                senderbalance = senderbalance - amount
+                recieverbalance = recieverbalance + amount
+                #Update the senders balance
+                senderAccount.balance = senderbalance
+                senderAccount.save()
+                #Update the recievers balance
+                recieverAccount.balance = recieverbalance
+                recieverAccount.save()
+                #Create a transaction object
+                #Get a transaction of withdraw
+                transferTrans = Transactiontype.objects.get(pk=3)
+                bankUser = BankUser.objects.get(pk=bankUserID)
+                # Create send transaction
+                sendertransaction = Transaction(bankUser=bankUser, account=senderAccount,DateTime=datetime.date.today(),amount=amount,transactiontype=transferTrans, creditdebit=1)
+                #Saving the transaction to the database
+                sendertransaction.save()
+                # Create recieve transaction
+                recievertransaction = Transaction(bankUser=bankUser, account=recieverAccount,DateTime=datetime.date.today(),amount=amount,transactiontype=transferTrans, creditdebit=0)
+                #Saving the transaction to the database
+                recievertransaction.save()
+           
+                #Setting a success message
+                successMsg = 'You have successfully initiated the transfer of  UGX {} from {} to {}. The balance of account {} is UGX {}'.format(amount,senderAccount,recieverAccount,senderAccount,senderAccount.balance)
+                context = {
+                  'successMsg': successMsg                     
+                  }
+
+                return render(request,"bankApp/teller/success.html",context)
+
+           context = {
+                "failedMsg":resMsg
+            }
+
+           return render(request,"bankApp/teller/failed.html",context)
+
+        # If the amount is greater than the account balance
+       failedMsg = "The sender's account has insuficient balance"
+       context = {
+            "failedMsg":failedMsg
+         }   
+       return render(request,"bankApp/teller/failed.html",context)
         
-    
-    
+    #If the request method is not POST. Redirect the user back to the withdraw page  
+    return HttpResponseRedirect(reverse('withdrawPage'))
        
     
 

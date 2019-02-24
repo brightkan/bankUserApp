@@ -14,5 +14,6 @@ urlpatterns = [
     url(r'^confirmWithdraw$', views.confirmWithdraw, name='confirmWithdraw'),
     url(r'^confirmDeposit$', views.confirmDeposit, name='confirmDeposit'),
     url(r'^initiateDeposit$', views.initiateDeposit, name='initiateDeposit'),
+    url(r'^confirmTransfer$', views.confirmTransfer, name='confirmTransfer'),
     
 ]

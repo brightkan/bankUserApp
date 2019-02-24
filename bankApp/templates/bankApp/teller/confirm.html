@@ -11,6 +11,7 @@
             </div>
             <div class="card-body">
                 <p>{{Msg}}</p>
+                <div style="width:fit-content; float: left; margin-right: 10px; margin-bottom: 10px;">
                 <h3>Customer Details</h3>
                 <table border="1" cellpadding="10">
                   <tr><td><strong>Customer Name</strong></td><td>{{customerName}}</td></tr>
@@ -20,7 +21,18 @@
                   <tr><td><strong>Account Type</strong></td><td>{{accountType}}</td></tr>
                   <tr><td><strong>Branch of Registration</strong></td><td>{{branchOfReg}}</td></tr>
                 </table>
-    
+              </div>
+              <div class="width:fit-content">
+                <h3>Reciever Details</h3>
+                <table border="1" cellpadding="10">
+                    <tr><td><strong>Account Number</strong></td><td>{{reciever.accountNumber}}</td></tr>
+                    <tr><td><strong>Reciever's Name</strong></td><td>{{reciever.name}}</td></tr>
+                    <tr><td><strong>Mobile</strong></td><td>{{reciever.mobile}}</td></tr>
+                    <tr><td><strong>Sex</strong></td><td>{{reciever.sex}}</td></tr>
+                    <tr><td><strong>Account Type</strong></td><td>{{reciever.accountType}}</td></tr>
+                    <tr><td><strong>Branch of Registration</strong></td><td>{{reciever.branchOfReg}}</td></tr>
+                  </table>
+                </div>
                 <form method="POST" action={%url url %} style="margin-top:10px">
                   {%csrf_token%}
                   <input type="hidden" name="bankUser" value={{user.bankuser.id}}>
