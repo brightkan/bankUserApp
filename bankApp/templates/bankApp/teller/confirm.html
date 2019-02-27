@@ -39,7 +39,10 @@
                 <form method="POST" action={%url url %} style="margin-top:10px">
                   {%csrf_token%}
                   <input type="hidden" name="bankUser" value={{user.bankuser.id}}>
-                  <input type="hidden" name="accountNumber" value={{accountNumber}}>
+                  <input type="hidden" name="accountNumber" value={{accountNumber.id}}>
+                  {%if type == 'Transfer'%}
+                  <input type="hidden" name="recieverAccountNumber" value={{reciever.accountNumber}}>
+                  {%endif%}
                   <input type="hidden" name="amount" value={{amount}}>
                   <div class="form-group">
                     <a href="{%url 'homePage'%}"><button type="button" class="btn btn-danger">No</button></a>       

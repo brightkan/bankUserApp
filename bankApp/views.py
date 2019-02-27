@@ -452,7 +452,7 @@ def confirmTransfer(request):
                "branchOfReg": recieverAccount.branchOfReg
            }
            context = {
-           "url" : "initiateWithdraw",
+           "url" : "initiateTransfer",
            "type": "Transfer",
            "bankUserId": bankUserID,
            "accountNumber": senderAccount,
@@ -489,7 +489,7 @@ def initiateTransfer(request):
     #This line requires a user to perform a POST request
     if request.method == 'POST':
        #Fetching data from the withdrawPage form 
-       senderAccountNumber = int(request.POST['senderAccountNumber'])
+       senderAccountNumber = int(request.POST['accountNumber'])
        recieverAccountNumber = int(request.POST['recieverAccountNumber'])
        amount = int(request.POST['amount'])
        bankUserID = request.POST['bankUser']
