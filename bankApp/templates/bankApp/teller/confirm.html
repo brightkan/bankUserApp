@@ -22,6 +22,7 @@
                   <tr><td><strong>Branch of Registration</strong></td><td>{{branchOfReg}}</td></tr>
                 </table>
               </div>
+              {%if type == 'Transfer'%}
               <div class="width:fit-content">
                 <h3>Reciever Details</h3>
                 <table border="1" cellpadding="10">
@@ -33,6 +34,8 @@
                     <tr><td><strong>Branch of Registration</strong></td><td>{{reciever.branchOfReg}}</td></tr>
                   </table>
                 </div>
+              {%endif%}
+
                 <form method="POST" action={%url url %} style="margin-top:10px">
                   {%csrf_token%}
                   <input type="hidden" name="bankUser" value={{user.bankuser.id}}>
