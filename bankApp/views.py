@@ -32,20 +32,6 @@ def homePage(request):
     return HttpResponse("<h1>401 Error</h1> <br>User did not match any available bank roles")
 
 
-def newCustomerPage(request):
-    # The line requires the user to be authenticated before accessing the view responses. 
-    if not request.user.is_authenticated:
-        # if the user is not authenticated it renders a login page 
-        return render(request,'bankApp/login.html',{"message":None})
-
-    context = {
-        "accountTypes":AccountType.objects.all(),
-        "home":"active",
-        "user":request.user
-    }
-
-    return render(request,"bankApp/manager/newCustomer.html",context)
-
 def withdrawPage(request):
     # The line requires the user to be authenticated before accessing the view responses. 
     if not request.user.is_authenticated:
@@ -86,10 +72,7 @@ def transferPage(request):
 
     return render(request,"bankApp/teller/transfer.html",context)
 
-
-
-
-        
+     
 # The login view authenticates the user
 # The view also renders the login page
 def login_view(request):
@@ -579,8 +562,50 @@ def initiateTransfer(request):
     #If the request method is not POST. Redirect the user back to the withdraw page  
     return HttpResponseRedirect(reverse('withdrawPage'))
        
-    
+##############################################################################
+# MANAGERS PAGES
 
+def newCustomerPage(request):
+    # The line requires the user to be authenticated before accessing the view responses. 
+    if not request.user.is_authenticated:
+        # if the user is not authenticated it renders a login page 
+        return render(request,'bankApp/login.html',{"message":None})
+
+    context = {
+        "accountTypes":AccountType.objects.all(),
+        "home":"active",
+        "user":request.user
+    }
+
+    return render(request,"bankApp/manager/newCustomer.html",context)
+
+def customersPage(request):
+    # The line requires the user to be authenticated before accessing the view responses. 
+    if not request.user.is_authenticated:
+        # if the user is not authenticated it renders a login page 
+        return render(request,'bankApp/login.html',{"message":None})
+
+    context = {
+        "accountTypes":AccountType.objects.all(),
+        "customers":"active",
+        "user":request.user
+    }
+
+    return render(request,"bankApp/manager/customers.html",context)
+
+def tellersPage(request):
+    # The line requires the user to be authenticated before accessing the view responses. 
+    if not request.user.is_authenticated:
+        # if the user is not authenticated it renders a login page 
+        return render(request,'bankApp/login.html',{"message":None})
+
+    context = {
+        "accountTypes":AccountType.objects.all(),
+        "tellers":"active",
+        "user":request.user
+    }
+
+    return render(request,"bankApp/manager/tellers.html",context)
         
         
             
