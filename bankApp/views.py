@@ -9,6 +9,8 @@ import datetime
 import requests
 import xml.etree.ElementTree as ET
 # Create your views here.
+# This is the jess engine server url
+JESS_SERVER_URL = "http://localhost:8080/bankApp/rest/api"
 
 def homePage(request):
     # The line requires the user to be authenticated before accessing the view responses. 
@@ -236,7 +238,7 @@ def initiateWithdraw(request):
 
            #Read the response data in xml
            try:
-               resData = requests.post('http://localhost:8080/bankApp/rest/api',data=reqData, headers = headers).text.encode("utf-8")
+               resData = requests.post(JESS_SERVER_URL,data=reqData, headers = headers).text.encode("utf-8")
                tree = ET.fromstring(resData)
                resMsg = tree.find('resMsg').text
                permit = tree.find('continue').text
@@ -366,7 +368,7 @@ def initiateDeposit(request):
 
        #Read the response data in xml
        try:
-           resData = requests.post('http://localhost:8080/bankApp/rest/api',data=reqData, headers = headers).text.encode("utf-8")
+           resData = requests.post('JESS_SERVER_URL',data=reqData, headers = headers).text.encode("utf-8")
            tree = ET.fromstring(resData)
            resMsg = tree.find('resMsg').text
            permit = tree.find('continue').text
@@ -506,7 +508,7 @@ def initiateTransfer(request):
 
            #Read the response data in xml
            try:
-               resData = requests.post('http://localhost:8080/bankApp/rest/api',data=reqData, headers = headers).text.encode("utf-8")
+               resData = requests.post(JESS_SERVER_URL,data=reqData, headers = headers).text.encode("utf-8")
                tree = ET.fromstring(resData)
                resMsg = tree.find('resMsg').text
                permit = tree.find('continue').text
