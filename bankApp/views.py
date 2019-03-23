@@ -222,8 +222,11 @@ def initiateWithdraw(request):
 
        #Get the balance on the bank account
        balance = int(bankAccount.balance)
+       
+       
        #The Withdraw transaction processing
        if amount < balance:
+           print("Amount is less than balance")
            #Get Jess approval
            #Perform a post request to the server
            headers = {'Content-Type':'application/xml'}
