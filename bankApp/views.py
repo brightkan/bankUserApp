@@ -592,7 +592,7 @@ def customersPage(request):
         return render(request,'bankApp/login.html',{"message":None})
 
     context = {
-        "accountTypes":AccountType.objects.all(),
+        "accounts":Account.objects.all(),
         "customers":"active",
         "user":request.user
     }

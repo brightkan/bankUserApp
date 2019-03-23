@@ -4,17 +4,30 @@
 {%block sections%}
     <section style="padding-top:20px">
       <div class="row mb-4">
-        <div class="col-lg-9 mb-0 mb-lg-0">
+        <div class="col-lg-10 mb-0 mb-lg-0">
           <div class="card">
             <div class="card-header">
               <h2 class="h6 text-uppercase mb-0">Customers</h2>
             </div>
             <div class="card-body">
-             <h1>body here</h1>
+             <table class="table table-striped card-text">
+               <tr>
+                 <td>Account Number</td><td>Name</td><td>Balance</td><td>Account Type</td>
+                 
+               </tr>
+             <!-- All data rows -->
+                {%for account in accounts%}
+                <tr>
+                  <td href="">{{account.id}}</td><td><a href="">{{account.customer}}</a></td><td>UGX {{account.balance}}</td><td>{{account.accountType}}</td>
+                </tr>
+                {%endfor%}
+             </table>
 
             </div>
           </div>
         </div>
       </div>
     </section>
+    <!-- button used for adding a new account -->
+    <a href="/newCustomer"><button>+</button></a>
 {%endblock%}
