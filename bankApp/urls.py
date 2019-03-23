@@ -18,4 +18,6 @@ urlpatterns = [
     url(r'^initiateTransfer$', views.initiateTransfer, name='initiateTransfer'),
     url(r'^customers$', views.customersPage, name='customersPage'),
     url(r'^tellers$', views.tellersPage, name='tellersPage'),
+    url(r'^newTeller$', views.newTeller, name='newTeller'),
+    url(r'^createTeller$', views.createTeller, name='createTeller'),
 ]

@@ -10,7 +10,20 @@
               <h2 class="h6 text-uppercase mb-0">Tellers</h2>
             </div>
             <div class="card-body">
-              <h1>body here</h1>
+              <table class="table table-striped">
+                <tr>
+                  <td>Name</td>
+                  <td>Bank Role</td>
+                  <td>Branch</td>
+                </tr>
+                {%for teller in Tellers%}
+                  <tr>
+                    <td>{{teller}}</td>
+                    <td>{{teller.bankrole}}</td>
+                    <td>{{teller.branch}}</td>
+                  </tr>
+                {%endfor%}
+              </table>
 
 
             </div>
@@ -18,4 +31,6 @@
         </div>
       </div>
     </section>
+    <a href="/newTeller"><button style="position:fixed; bottom: 50px; 
+      display: inline-block; text-decoration: none; border: none; right: 50px; z-index: 1; font-size: 1.5em; border-radius: 100%; padding: 10px; height:50px; width:50px; background-color: red; color: white">+</button></a>
 {%endblock%}

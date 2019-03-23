@@ -1,0 +1,49 @@
+{% extends './loggedInLayout.html'%}
+{% load staticfiles %}
+
+{%block sections%}
+<section style="padding-top:20px">
+        <div class="row mb-4">
+          <div class="col-lg-9 mb-0 mb-lg-0">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="h6 text-uppercase mb-0">New Teller</h2>
+              </div>
+              <div class="card-body">
+                    <form action={%url 'createCustomer'%} method="post" class="form-horizontal">
+                            {%csrf_token%}
+                            <div class="form-group row">
+                              <label class="col-md-3 form-control-label">First Name</label>
+                              <div class="col-md-9">
+                                <input id="inputHorizontalSuccess" name="firstName" type="text" placeholder="Enter first name" class="form-control form-control-success" required><small class="form-text text-muted ml-3">Example John</small>
+                              </div>
+                            </div>
+            
+                            <div class="form-group row">
+                              <label class="col-md-3 form-control-label">Middle Name</label>
+                              <div class="col-md-9">
+                                <input id="inputHorizontalSuccess" name="middleName" type="text" placeholder="Enter middle name" class="form-control form-control-success" ><small class="form-text text-muted ml-3">Example John</small>
+                              </div>
+                            </div>
+            
+                            <div class="form-group row">
+                              <label class="col-md-3 form-control-label">Last Name</label>
+                              <div class="col-md-9">
+                                <input id="inputHorizontalSuccess" name="lastName" type="text" placeholder="Enter last name" class="form-control form-control-success" required><small class="form-text text-muted ml-3">Example Doe</small>
+                              </div>
+                            </div>
+
+                            <div class="form-group row">       
+                                <div class="col-md-9 ml-auto">
+                                    <input type="submit" value="Create Teller" class="btn btn-primary">
+                                </div>
+                            </div>
+                    </form>
+              </div>
+            </div>
+          </div>
+          </div>
+        </section>
+
+
+{%endblock%}

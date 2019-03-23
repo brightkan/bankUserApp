@@ -604,17 +604,42 @@ def tellersPage(request):
     if not request.user.is_authenticated:
         # if the user is not authenticated it renders a login page 
         return render(request,'bankApp/login.html',{"message":None})
-
+    
+   
     context = {
-        "accountTypes":AccountType.objects.all(),
+        "Tellers":BankUser.objects.filter(bankrole="2"),
         "tellers":"active",
         "user":request.user
     }
 
     return render(request,"bankApp/manager/tellers.html",context)
+
+def newTeller(request):
+    # The line requires the user to be authenticated before accessing the view responses. 
+    if not request.user.is_authenticated:
+        # if the user is not authenticated it renders a login page 
+        return render(request,'bankApp/login.html',{"message":None})
+
+    context = {
+        "user":request.user
+    }
+
+    return render(request,"bankApp/manager/newTeller.html",context)
         
         
-            
+def createTeller(request):
+    # The line requires the user to be authenticated before accessing the view responses. 
+    if not request.user.is_authenticated:
+        # if the user is not authenticated it renders a login page 
+        return render(request,'bankApp/login.html',{"message":None})
+
+    context = {
+        "accountTypes":AccountType.objects.all(),
+        "home":"active",
+        "user":request.user
+    }
+
+    return render(request,"bankApp/manager/newCustomer.html",context)        
 
         
            
