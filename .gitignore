@@ -6,3 +6,7 @@ db.sqlite3
 /.vscode
 .vscode
 *.vscode
+
+*/constant.py
+constant.py
+
