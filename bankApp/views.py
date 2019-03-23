@@ -8,9 +8,10 @@ from .models import AccountType,Customer,Account,Branch,Transaction,Transactiont
 import datetime
 import requests
 import xml.etree.ElementTree as ET
+import constant
 # Create your views here.
 # This is the jess engine server url
-JESS_SERVER_URL = "http://localhost:8080/bankApp/rest/api"
+JESS_SERVER_URL = constant.JESS_SERVER_URL
 
 def homePage(request):
     # The line requires the user to be authenticated before accessing the view responses. 
