@@ -8,6 +8,7 @@ bankApp/migrations/*.pyc
 .vscode
 *.vscode
 
-*/constant.py
+*constant.py
+~constant.py
 constant.py
 
