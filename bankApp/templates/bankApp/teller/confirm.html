@@ -11,7 +11,7 @@
             </div>
             <div class="card-body">
                 <p>{{Msg}}</p>
-                <div style="width:fit-content; float: left; margin-right: 10px; margin-bottom: 10px;">
+                <div style="width:fit-content; margin-right: 10px; margin-bottom: 10px;">
                 <h3>Customer Details</h3>
                 <table border="1" cellpadding="10">
                   <tr><td><strong>Customer Name</strong></td><td>{{customerName}}</td></tr>
@@ -23,7 +23,7 @@
                 </table>
               </div>
               {%if type == 'Transfer'%}
-              <div class="width:fit-content">
+              <div style="width:fit-content; float:right;position: relative; top: -300px;" >
                 <h3>Reciever Details</h3>
                 <table border="1" cellpadding="10">
                     <tr><td><strong>Account Number</strong></td><td>{{reciever.accountNumber}}</td></tr>
@@ -45,7 +45,7 @@
                   {%endif%}
                   <input type="hidden" name="amount" value={{amount}}>
                   <div class="form-group">
-                    <a href="{%url 'homePage'%}"><button type="button" class="btn btn-danger">No</button></a>       
+                    <a href="{%url 'homePage'%}"><button type="button" class="btn btn-danger" >No</button></a>       
                     <button type="submit" class="btn btn-success">Yes</button>
                   </div>
                 </form>

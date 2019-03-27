@@ -9,6 +9,7 @@ import datetime
 import requests
 import xml.etree.ElementTree as ET
 import constant
+from django.db.models import Avg, Max, Min, Sum
 # Create your views here.
 # This is the jess engine server url
 JESS_SERVER_URL = constant.JESS_SERVER_URL
@@ -225,17 +226,38 @@ def initiateWithdraw(request):
 
        #Get the balance on the bank account
        balance = int(bankAccount.balance)
+
+       # Dyanamic generated limit
+       # Get all withdraw transactions with the given bank account    
+       transactions = Transaction.objects.filter(account = bankAccount).filter(transactiontype= 1)
+       #Count all transactions for the given bank account    
+       numOfTransactions = transactions.count()
        
+       #Get the total amounts in the transaction    
+       totalAmount = 0
+       for transaction in transactions:
+            totalAmount = totalAmount + transaction.amount
        
+       # Get the average amount for all withdraw transactions    
+       averageAmount = totalAmount/numOfTransactions
+       # Increment the average amount    
+       increment = averageAmount * 1.5
+       # We generate the new limit
+
+       limit = averageAmount + increment    
+
+       print("The limit for the account is")
+       print(limit)
+
        #The Withdraw transaction processing
        if amount < balance:
-           print("Amount is less than balance")
            #Get Jess approval
            #Perform a post request to the server
            headers = {'Content-Type':'application/xml'}
-
+           
+      
            #Pass in the request data
-           reqData = """<transaction><amount>{}</amount></transaction>""".format(amount)
+           reqData = """<transaction><amount>{}</amount><limit>{}</limit></transaction>""".format(amount,limit)
 
            #Read the response data in xml
            try:
