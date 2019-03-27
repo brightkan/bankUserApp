@@ -257,7 +257,7 @@ def initiateWithdraw(request):
            
       
            #Pass in the request data
-           reqData = """<transaction><amount>{}</amount><limit>{}</limit></transaction>""".format(amount,limit)
+           reqData = """<transaction><amount>{}</amount><limit>{}</limit></transaction>""".format(amount,int(limit))
 
            #Read the response data in xml
            try:
