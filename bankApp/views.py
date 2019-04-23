@@ -10,6 +10,7 @@ import requests
 import xml.etree.ElementTree as ET
 import constant
 from django.db.models import Avg, Max, Min, Sum
+from .JessApproval import JessApproval
 # Create your views here.
 # This is the jess engine server url
 JESS_SERVER_URL = constant.JESS_SERVER_URL
@@ -123,7 +124,7 @@ def createCustomer(request):
         try:
             # Creating instance of customer
             customer = Customer(firstName=firstname,middleName=middlename,lastName=lastname,address=address,email=email,mobile=mobile,sex=sex,dateOfBirth=dob)
-            # Saving the customer instance to the database
+            # Saving the customer instance to the database 
             customer.save()
             
             # Getting the accountType instance submitted by the user 
@@ -252,26 +253,18 @@ def initiateWithdraw(request):
        #The Withdraw transaction processing
        if amount < balance:
            #Get Jess approval
-           #Perform a post request to the server
-           headers = {'Content-Type':'application/xml'}
-           
-      
-           #Pass in the request data
-           reqData = """<transaction><amount>{}</amount><limit>{}</limit></transaction>""".format(amount,int(limit))
-
-           #Read the response data in xml
+           jessApproval = JessApproval(amount)
+           jessApproval.set_limit(limit)
            try:
-               resData = requests.post(JESS_SERVER_URL,data=reqData, headers = headers).text.encode("utf-8")
-               tree = ET.fromstring(resData)
-               resMsg = tree.find('resMsg').text
-               permit = tree.find('continue').text
-
+               #Perform a post request to the server
+               jessApproval.perform_request()
            except:
                context = {
-                   "failedMsg": "The application could not connect to the Jess engine"
+                   "failedMsg": jessApproval.resMsg
                }
                return render(request,"bankApp/teller/failed.html",context)
-
+           
+           permit = jessApproval.permit
            # permit determines whether the app should continue to commit the transaction 
            if permit == 'true': 
                 #Perform the withdraw
@@ -296,7 +289,7 @@ def initiateWithdraw(request):
                 return render(request,"bankApp/teller/success.html",context)
 
            context = {
-                "failedMsg":resMsg
+                "failedMsg":jessApproval.resMsg
             }
 
            return render(request,"bankApp/teller/failed.html",context)
