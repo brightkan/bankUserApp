@@ -5,15 +5,10 @@ from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render
 from django.urls import reverse
 from .models import AccountType,Customer,Account,Branch,Transaction,Transactiontype,BankUser
-import datetime
-import requests
-import xml.etree.ElementTree as ET
-import constant
 from django.db.models import Avg, Max, Min, Sum
+import datetime
 from .JessApproval import JessApproval
-# Create your views here.
-# This is the jess engine server url
-JESS_SERVER_URL = constant.JESS_SERVER_URL
+from .procedures import generateLimit,generateDifferent,generateAverageNumberOfTrans
 
 def homePage(request):
     # The line requires the user to be authenticated before accessing the view responses. 
@@ -227,34 +222,20 @@ def initiateWithdraw(request):
 
        #Get the balance on the bank account
        balance = int(bankAccount.balance)
-
-       # Dyanamic generated limit
-       # Get all withdraw transactions with the given bank account    
-       transactions = Transaction.objects.filter(account = bankAccount).filter(transactiontype= 1)
-       #Count all transactions for the given bank account    
-       numOfTransactions = transactions.count()
-       
-       #Get the total amounts in the transaction    
-       totalAmount = 0
-       for transaction in transactions:
-            totalAmount = totalAmount + transaction.amount
-       
-       # Get the average amount for all withdraw transactions    
-       averageAmount = totalAmount/numOfTransactions
-       # Increment the average amount    
-       increment = averageAmount * 1.5
-       # We generate the new limit
-
-       limit = averageAmount + increment    
-
-       print("The limit for the account is")
-       print(limit)
-
+       # Generate whether user has performed a different transaction on the same day
+       different = generateDifferent(bankAccount,1)
+       #Generate the dynamic limit    
+       limit = generateLimit(bankAccount,1)
+       #Generate number of transactions per day
+       numOfTrans = generateAverageNumberOfTrans(bankAccount,1)  
+     
        #The Withdraw transaction processing
        if amount < balance:
            #Get Jess approval
            jessApproval = JessApproval(amount)
-           jessApproval.set_limit(limit)
+           jessApproval.setLimit(limit)
+           jessApproval.setDifferent(different)
+           jessApproval.setNumOfTrans(numOfTrans)
            try:
                #Perform a post request to the server
                jessApproval.perform_request()
@@ -265,6 +246,7 @@ def initiateWithdraw(request):
                return render(request,"bankApp/teller/failed.html",context)
            
            permit = jessApproval.permit
+         
            # permit determines whether the app should continue to commit the transaction 
            if permit == 'true': 
                 #Perform the withdraw
@@ -373,27 +355,31 @@ def initiateDeposit(request):
 
        #Get the balance on the bank account
        balance = int(bankAccount.balance)
-       #The Deposit transaction processing
-      
-       #Get Jess approval
-       #Perform a post request to the server
-       headers = {'Content-Type':'application/xml'}
-
-       #Pass in the request data
-       reqData = """<transaction><amount>{}</amount></transaction>""".format(amount)
-
-       #Read the response data in xml
-       try:
-           resData = requests.post('JESS_SERVER_URL',data=reqData, headers = headers).text.encode("utf-8")
-           tree = ET.fromstring(resData)
-           resMsg = tree.find('resMsg').text
-           permit = tree.find('continue').text
-
-       except:
-           context = {
-                "failedMsg": "The application could not connect to the Jess engine"
-            }
-           return render(request,"bankApp/teller/failed.html",context)
+        # Generate whether user has performed a different transaction on the same day
+       different = generateDifferent(bankAccount,2)
+       #Generate the dynamic limit    
+       limit = generateLimit(bankAccount,2)
+       #Generate number of transactions per day
+       numOfTrans = generateAverageNumberOfTrans(bankAccount,2)  
+        
+       #The Withdraw transaction processing
+       if amount < balance:
+           #Get Jess approval
+           jessApproval = JessApproval(amount)
+           jessApproval.setLimit(limit)
+           jessApproval.setDifferent(different)
+           jessApproval.setNumOfTrans(numOfTrans)
+           try:
+               #Perform a post request to the server
+               jessApproval.perform_request()
+           except:
+               context = {
+                   "failedMsg": jessApproval.resMsg
+               }
+               return render(request,"bankApp/teller/failed.html",context)
+           
+           permit = jessApproval.permit
+           # permit determines whether the app should continue to commit the transaction 
 
         # permit determines whether the app should continue to commit the transaction 
        if permit == 'true': 
@@ -419,7 +405,7 @@ def initiateDeposit(request):
            return render(request,"bankApp/teller/success.html",context)
 
        context = {
-            "failedMsg":resMsg
+            "failedMsg":jessApproval.resMsg
         }
 
        return render(request,"bankApp/teller/failed.html",context)
@@ -513,28 +499,33 @@ def initiateTransfer(request):
        #Get the balance on the sender's bank account
        senderbalance = int(senderAccount.balance)
        recieverbalance = int(recieverAccount.balance)
+
+       # Generate whether user has performed a different transaction on the same day
+       different = generateDifferent(senderAccount,3)
+       #Generate the dynamic limit    
+       limit = generateLimit(senderAccount,3)
+       #Generate number of transactions per day
+       numOfTrans = generateAverageNumberOfTrans(senderAccount,3)  
+
        #The Transfer transaction processing
        if amount < senderbalance:
            #Get Jess approval
-           #Perform a post request to the server
-           headers = {'Content-Type':'application/xml'}
+           jessApproval = JessApproval(amount)
+           jessApproval.setLimit(limit)
+           jessApproval.setDifferent(different)
+           jessApproval.setNumOfTrans(numOfTrans)
 
-           #Pass in the request data
-           reqData = """<transaction><amount>{}</amount></transaction>""".format(amount)
-
-           #Read the response data in xml
            try:
-               resData = requests.post(JESS_SERVER_URL,data=reqData, headers = headers).text.encode("utf-8")
-               tree = ET.fromstring(resData)
-               resMsg = tree.find('resMsg').text
-               permit = tree.find('continue').text
-
+               #Perform a post request to the server
+               jessApproval.perform_request()
            except:
                context = {
-                   "failedMsg": "The application could not connect to the Jess engine"
+                   "failedMsg": jessApproval.resMsg
                }
                return render(request,"bankApp/teller/failed.html",context)
 
+           
+           permit = jessApproval.permit
            # permit determines whether the app should continue to commit the transaction 
            if permit == 'true': 
                 #Perform the transfer
@@ -568,7 +559,7 @@ def initiateTransfer(request):
                 return render(request,"bankApp/teller/success.html",context)
 
            context = {
-                "failedMsg":resMsg
+                "failedMsg":jessApproval.resMsg
             }
 
            return render(request,"bankApp/teller/failed.html",context)
