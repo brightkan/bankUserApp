@@ -239,6 +239,7 @@ def initiateWithdraw(request):
            try:
                #Perform a post request to the server
                jessApproval.perform_request()
+               jessApproval.print_reqData()
            except:
                context = {
                    "failedMsg": jessApproval.resMsg

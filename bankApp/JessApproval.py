@@ -21,7 +21,11 @@ class JessApproval:
         self.limit = limit
     
     def setDifferent(self,diff):
-        self.different = diff
+        if diff == "no":
+            self.different = 0
+        else:
+            self.different = 1
+
    
     def setNumOfTrans(self,num):
         self.numOfTrans = num
@@ -40,4 +44,6 @@ class JessApproval:
         self.tree = ET.fromstring(self.resData)
         self.resMsg = self.tree.find('resMsg').text
         self.permit = self.tree.find('continue').text
-        
+    
+    def print_reqData(self):
+        print(self.reqData)

@@ -1,0 +1,167 @@
+package com.app;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.xml.parsers.*;
+import org.xml.sax.InputSource;
+import org.w3c.dom.*;
+import org.w3c.dom.Node;
+
+import java.io.*;
+import jess.*;
+
+@Path("/api")
+public class Bright {
+	int amountSent,limitSent,differentSent,antSent;
+	Rete engine;
+	String result;
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML)
+	public String checkJess(String reqData) {
+	
+//	Read xml
+	try {
+		DocumentBuilderFactory dbf =
+			DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		InputSource is = new InputSource();
+		is.setCharacterStream(new StringReader(reqData)); //xml string is entered
+		Document doc = db.parse(is);
+//		Get Doc root element
+		Element root = doc.getDocumentElement();
+		
+		NodeList transaction = doc.getElementsByTagName("transaction");
+
+		Element element = (Element) transaction.item(0);
+		NodeList amount = element.getElementsByTagName("amount");  
+		Element line = (Element) amount.item(0);   
+		amountSent = Integer.parseInt(getCharacterDataFromElement(line));
+		
+//		Get limit
+		NodeList limitl = root.getElementsByTagName("limit");
+		Element limitline = (Element) limitl.item(0);
+		limitSent = Integer.parseInt(getCharacterDataFromElement(limitline));
+		
+//      Get Different
+		NodeList differentl = root.getElementsByTagName("different");
+		Element differentline = (Element) differentl.item(0);
+		differentSent = Integer.parseInt(getCharacterDataFromElement(differentline));
+		
+//		Get average Number Of Transactions per day
+		NodeList antl = root.getElementsByTagName("averageNumberOfTrans");
+		Element antline = (Element) antl.item(0);
+		antSent = Integer.parseInt(getCharacterDataFromElement(antline));
+		
+							
+	}
+	catch (Exception e) {
+		e.printStackTrace();
+	}
+	
+	
+	
+//end Read xml
+	
+//	Initiate Jess engine
+	engine = new Rete();
+	
+//	Store the value from Java in Jess
+	
+	
+	engine.store("AMOUNT", amountSent);
+	engine.store("LIMIT", limitSent);
+	engine.store("DIFFERENT",differentSent);
+	engine.store("ANT", antSent);
+	
+	String rule = "(defrule amount-greater-than-50000\n" + 
+			"    (amount ?a&:(> ?a 50000))" + 
+			"    =>" + 
+			"    (store  RESULT \"<resMsg>Jess says the amount is greater than allowed limit</resMsg>"
+			+ "<continue>false</continue>\")" + 
+			"    " +  
+			")";
+	String rule1 = "(defrule amount-less-than-limit" + 
+	"    (amount ?a&:(< ?a 50000))" + 
+	"    =>" + 
+	"   (assert (different (fetch DIFFERENT))) "+
+	")";
+	
+	String rule2 = "(defrule different-greater-than-zero" + 
+ 	"    (different ?d&:(> ?d 0))" + 
+ 	"    =>" + 
+ 	"    (store  RESULT \"<resMsg>Jess says the account has already performed two different transactions on the same day. This transaction is likely to be fraudulent</resMsg>"
+ 	+ "<continue>false</continue>\")" + 
+   	"    " +  
+	")";
+	
+    String rule3 = "(defrule different-less-than-one" + 
+		 	"    (different ?d&:(< ?d 1))" + 
+		 	"    =>" + 
+		 	"    (assert (ant (fetch ANT)))"
+		   	 +  
+			")";
+    
+    String rule4 = "(defrule number-of-transactions-greater-than-5" + 
+		 	"    (ant ?t&:(> ?t 5))" + 
+		 	"    =>" + 
+		 	"    (store  RESULT \"<resMsg>Jess says the number of transactions per day are greater than 5. Transaction likely to be fraudulent</resMsg>"
+		 	+ "<continue>false</continue>\")" + 
+		   	"    " +  
+			")";
+    
+    String rule5 = "(defrule number-of-transactions-less-than-5" + 
+		 	"    (ant ?t&:(< ?t 5))" + 
+		 	"    =>" + 
+		 	"    (store  RESULT \"<resMsg>Jess says the number of transactions per day are less than 5</resMsg>"
+		 	+ "<continue>true</continue>\")" + 
+		   	"    " +  
+			")";
+	
+//	String rule1 = "(defrule amount-less-than-50000" + 
+//			"    (amount ?a&:(< ?a 50000))" + 
+//			"    =>" + 
+//			"    (store  RESULT \"<resMsg>Jess says the amount is less than 50000</resMsg>"
+//			+ "<continue>true</continue>\")" + 
+//			"    " +  
+//			")";
+	//Create a fact and assert it
+	try {
+	    
+		engine.executeCommand("(assert (amount (fetch AMOUNT)))");
+		engine.executeCommand(rule);
+		engine.executeCommand(rule1);
+		engine.executeCommand(rule2);
+		engine.executeCommand(rule3);
+		engine.executeCommand(rule4);
+		engine.executeCommand(rule5);
+		engine.executeCommand("(run)");
+		Value resValue = engine.fetch("RESULT");
+	 result = resValue.stringValue(engine.getGlobalContext());
+	} catch (JessException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+
+	return "<data>"+result+
+	"</data>";	        
+
+	//CheckJess function ends here
+	}
+	  
+	private String getCharacterDataFromElement(Element e){
+		// TODO Auto-generated method stub
+	
+		
+		Node child = e.getFirstChild();
+        if (child instanceof CharacterData) {
+           CharacterData cd = (CharacterData) child;
+           return cd.getData();
+        }
+        return "?";
+		
+	}
+
+}
