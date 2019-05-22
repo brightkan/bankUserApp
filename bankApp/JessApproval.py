@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 
 class JessApproval:
     # Jess server url stores the url to the jess server api to support integration
-    JESS_SERVER_URL = "http://localhost:8080/BankApp/rest/api"
+    JESS_SERVER_URL = "http://localhost:8080/bankAppApiServer/rest/api"
     # The headers required when performing a POST request
     headers = {'Content-Type':'application/xml'}
     # The initial value of permit which allows the app to commit a transaction
