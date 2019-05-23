@@ -75,15 +75,15 @@ public class Bright {
 	engine.store("DIFFERENT",differentSent);
 	engine.store("ANT", antSent);
 	
-	String rule = "(defrule amount-greater-than-50000\n" + 
-			"    (amount ?a&:(> ?a 50000))" + 
+	String rule = "(defrule amount-greater-than-limit\n" + 
+			"    (amount ?a&:(> ?a (fetch LIMIT)))" + 
 			"    =>" + 
 			"    (store  RESULT \"<resMsg>Jess says the amount is greater than allowed limit</resMsg>"
 			+ "<continue>false</continue>\")" + 
 			"    " +  
 			")";
 	String rule1 = "(defrule amount-less-than-limit" + 
-	"    (amount ?a&:(< ?a 50000))" + 
+	"    (amount ?a&:(< ?a (fetch LIMIT)))" + 
 	"    =>" + 
 	"   (assert (different (fetch DIFFERENT))) "+
 	")";
