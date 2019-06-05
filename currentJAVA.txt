@@ -1,0 +1,262 @@
+package com.app;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.xml.parsers.*;
+import org.xml.sax.InputSource;
+import org.w3c.dom.*;
+import org.w3c.dom.Node;
+
+import java.io.*;
+import jess.*;
+
+@Path("/api")
+public class Bright {
+	int amountSent,limitSent,differentSent,antSent,rank;
+	Rete engine;
+	String result;
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML)
+	public String checkJess(String reqData) {
+//		Read xml
+		try {
+			DocumentBuilderFactory dbf =
+					DocumentBuilderFactory.newInstance();
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				InputSource is = new InputSource();
+				is.setCharacterStream(new StringReader(reqData)); //xml string is entered
+				Document doc = db.parse(is);
+//				Get Doc root element
+				Element root = doc.getDocumentElement();
+				
+				NodeList transaction = doc.getElementsByTagName("transaction");
+
+				Element element = (Element) transaction.item(0);
+				NodeList amount = element.getElementsByTagName("amount");  
+				Element line = (Element) amount.item(0);   
+				amountSent = Integer.parseInt(getCharacterDataFromElement(line));
+				
+//				Get limit
+				NodeList limitl = root.getElementsByTagName("limit");
+				Element limitline = (Element) limitl.item(0);
+				limitSent = Integer.parseInt(getCharacterDataFromElement(limitline));
+				
+//		      Get Different
+				NodeList differentl = root.getElementsByTagName("different");
+				Element differentline = (Element) differentl.item(0);
+				differentSent = Integer.parseInt(getCharacterDataFromElement(differentline));
+				
+//				Get average Number Of Transactions per day
+				NodeList antl = root.getElementsByTagName("averageNumberOfTrans");
+				Element antline = (Element) antl.item(0);
+				antSent = Integer.parseInt(getCharacterDataFromElement(antline));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//end Read xml
+		
+		//end Read xml
+		
+//		Initiate Jess engine
+		engine = new Rete();
+		
+//		Store the value from Java in Jess
+		
+		
+		engine.store("AMOUNT", amountSent);
+		engine.store("LIMIT", limitSent);
+		engine.store("DIFFERENT",differentSent);
+		engine.store("ANT", antSent);
+		
+//		Limit with a red flag
+		
+		String rule1_P = "(defrule amount-less-than-limit" + 
+				"    (amount ?a&:(< ?a (fetch LIMIT)))" + 
+				"    =>" +
+				"    (assert (ant (fetch ANT)))"+
+				"    (assert (code P))"+
+				")";
+		
+		String rule2_PN = "(defrule daily-transaction-limit-is-less" + 
+				"    (and (ant ?a&:(>= ?a 5)) (code P))" + 
+				"    =>" + 
+				"     (assert (diff (fetch DIFFERENT)))"+ 
+				"     (assert (code PN))" +  
+				")";
+		
+		String rule3_PNN = "(defrule deposit-withdraw-pattern-is-one" + 
+				"    (and (diff ?d&:(> ?d 0)) (code PN))" + 
+				"    =>" + 
+				"    (assert  (rank 40)) "+
+				
+				")";
+		
+		String rule3_PNP = "(defrule deposit-withdraw-pattern-is-zero" + 
+				"    (and (diff ?d&:(< ?d 1)) (code PN))" + 
+				"    =>" + 
+				"    (assert (rank 20)) "+
+				")";
+		
+		
+		
+		String rule2_PP = "(defrule daily-transaction-limit-is-greater" + 
+				"    (and (ant ?a&:(< ?a 5)) (code P))" + 
+				"    =>" + 
+				"   (assert (diff (fetch DIFFERENT)))"+ 
+				"   (assert (code PP))" + 
+				"    " +  
+				")";
+		
+		String rule3_PPN = "(defrule deposit-withdraw-pattern-is-one-PPN" + 
+				"    (and (diff ?d&:(> ?d 0)) (code PP))" + 
+				"    =>" + 
+				"    (assert  (rank 20)) "+
+				")";
+		
+		String rule3_PPP = "(defrule deposit-withdraw-pattern-is-zero-PPP" + 
+				"    (and (diff ?d&:(< ?d 1)) (code PP))" + 
+				"    =>" + 
+				"    (assert (rank 0)) "+
+				")";
+		
+		String rule1_N = "(defrule amount-greater-than-limit" + 
+				"    (amount ?a&:(> ?a (fetch LIMIT)))" + 
+				"    =>" + 
+				"    (assert (ant (fetch ANT)))"+
+				"    (assert (code N))"+ 
+				")";
+		
+		String rule2_NN = "(defrule daily-transaction-limit-is-greater-NN" + 
+				"    (and (ant ?a&:(>= ?a 5)) (code N))" + 
+				"    =>" + 
+				"     (assert (diff (fetch DIFFERENT)))"+ 
+				"     (assert (code NN))" +  
+				")";
+		
+		String rule3_NNN = "(defrule deposit-withdraw-pattern-is-one-NNN" + 
+				"    (and (diff ?d&:(> ?d 0)) (code NN))" + 
+				"    =>" + 
+				"    (assert  (rank 60)) "+
+				
+				")";
+		
+		String rule3_NNP = "(defrule deposit-withdraw-pattern-is-zero-NNP" + 
+				"    (and (diff ?d&:(< ?d 1)) (code NN))" + 
+				"    =>" + 
+				"    (assert  (rank 40)) "+
+				
+				")";
+		
+		
+		String rule2_NP = "(defrule daily-transaction-limit-is-less-NP" + 
+				"    (and (ant ?a&:(< ?a 5)) (code N))" + 
+				"    =>" + 
+				"     (assert (diff (fetch DIFFERENT)))"+ 
+				"     (assert (code NP))" +  
+				")";
+		
+		String rule3_NPN = "(defrule deposit-withdraw-pattern-is-one-NPN" + 
+				"    (and (diff ?d&:(> ?d 0)) (code NP))" + 
+				"    =>" + 
+				"    (assert  (rank 40)) "+
+				
+				")";
+		
+		String rule3_NPP = "(defrule deposit-withdraw-pattern-is-zero-NPP" + 
+				"    (and (diff ?d&:(< ?d 1)) (code NP))" + 
+				"    =>" + 
+				"    (assert  (rank 20)) "+
+				
+				")";
+		
+		
+		String ruleRisk= "(defrule risk-is-low" + 
+		"    (rank ?a&:(<= ?a 20))" + 
+		"    =>" + 
+		"    (store  RESULT \"<resMsg>Jess says the risk is low</resMsg>"
+		+ "<continue>true</continue>\")" + 
+		"    " +  
+		")";
+		
+		String ruleRisk1 = "(defrule risk-is-medium" + 
+				"    (rank ?a&:(= ?a 40))" + 
+				"    =>" + 
+				"    (store  RESULT \"<resMsg>Jess says the risk is medium</resMsg>"
+				+ "<continue>false</continue>\")" + 
+				"    " +  
+				")";
+		
+		String ruleRisk2 = "(defrule risk-is-high" + 
+				"    (rank ?a&:(> ?a 40))" + 
+				"    =>" + 
+				"    (store  RESULT \"<resMsg>Jess says the risk is high</resMsg>"
+				+ "<continue>false</continue>\")" + 
+				"    " +  
+				")";
+		
+//		String rule1_N = "(defrule amount-greater-than-limit" + 
+//				"    (amount ?a&:(> ?a (fetch LIMIT)))" + 
+//				"    =>" + 
+//				"    (store  RESULT \"<resMsg>Jess says the amount is greater than limit</resMsg>"
+//				+ "<continue>false</continue>\")" + 
+//				"    " +  
+//				")";
+//		
+		//Create a fact and assert it
+		
+		try {
+//			
+			engine.executeCommand("(assert (amount (fetch AMOUNT)))");
+			engine.executeCommand(rule1_P);
+			engine.executeCommand(rule2_PN);
+			engine.executeCommand(rule3_PNN);
+			engine.executeCommand(rule3_PNP);
+			engine.executeCommand(rule2_PP);
+			engine.executeCommand(rule3_PPN);
+			engine.executeCommand(rule3_PPP);
+			engine.executeCommand(rule1_N);
+			engine.executeCommand(rule2_NN);
+			engine.executeCommand(rule3_NNN);
+			engine.executeCommand(rule3_NNP);
+			engine.executeCommand(rule2_NP);
+			engine.executeCommand(rule3_NPN);
+			engine.executeCommand(rule3_NPP);
+			engine.executeCommand(ruleRisk);
+			engine.executeCommand(ruleRisk1);
+			engine.executeCommand(ruleRisk2);
+			engine.executeCommand("(run)");
+			Value resValue = engine.fetch("RESULT");
+		    result = resValue.stringValue(engine.getGlobalContext());
+		    
+		 
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "<data>"+result+"</data>";	        
+
+				//CheckJess function ends here
+				}
+	
+	private String getCharacterDataFromElement(Element e){
+		// TODO Auto-generated method stub
+	
+		
+		Node child = e.getFirstChild();
+        if (child instanceof CharacterData) {
+           CharacterData cd = (CharacterData) child;
+           return cd.getData();
+        }
+        return "?";
+		
+	}
+	
+
+}
+
+
+
