@@ -105,4 +105,11 @@ class Transaction(models.Model):
         return 'Account:{} _ trans:{}_amount:{}_time:{}'.format(self.account,self.transactiontype,self.amount,self.DateTime)
 
 
-   
+class JessSettings(models.Model):
+    no_of_transactions_limit = models.IntegerField(default=5)
+    rule_one_rank = models.IntegerField(default=20)
+    rule_two_rank = models.IntegerField(default=20)
+    rule_three_rank = models.IntegerField(default=20)
+    
+
+

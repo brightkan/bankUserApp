@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^tellers$', views.tellersPage, name='tellersPage'),
     url(r'^newTeller$', views.newTeller, name='newTeller'),
     url(r'^createTeller$', views.createTeller, name='createTeller'),
+    url(r'^update_jess_settings$', views.update_jess_settings, name='update_jess_settings'),
 ]

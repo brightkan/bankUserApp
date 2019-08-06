@@ -4,10 +4,10 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render
 from django.urls import reverse
-from .models import AccountType,Customer,Account,Branch,Transaction,Transactiontype,BankUser
+from .models import AccountType,Customer,Account,Branch,Transaction,Transactiontype,BankUser,JessSettings
 from django.db.models import Avg, Max, Min, Sum
 import datetime
-from .JessApproval import JessApproval
+from .JessApproval import JessApproval 
 from .procedures import generateLimit,generateDifferent,generateAverageNumberOfTrans
 
 def homePage(request):
@@ -18,7 +18,8 @@ def homePage(request):
 
     context = {
         "home":"active",
-        "user":request.user
+        "user":request.user,
+        "jess_settings": JessSettings.objects.get(pk=1)
     }
     # If user is a manager
     user = request.user
@@ -260,6 +261,7 @@ def initiateWithdraw(request):
                 withdrawTrans = Transactiontype.objects.get(pk=1)
                 bankUser = BankUser.objects.get(pk=bankUserID)
                 transaction = Transaction(bankUser=bankUser, account=bankAccount,DateTime=datetime.date.today(),amount=amount,transactiontype=withdrawTrans, creditdebit=1)
+              
                 #Saving the transaction to the database
                 transaction.save()
            
@@ -587,7 +589,8 @@ def newCustomerPage(request):
     context = {
         "accountTypes":AccountType.objects.all(),
         "home":"active",
-        "user":request.user
+        "user":request.user,
+        "jess_settings": JessSettings.objects.get(pk=1)
     }
 
     return render(request,"bankApp/manager/newCustomer.html",context)
@@ -601,7 +604,8 @@ def customersPage(request):
     context = {
         "accounts":Account.objects.all(),
         "customers":"active",
-        "user":request.user
+        "user":request.user,
+        "jess_settings": JessSettings.objects.get(pk=1)
     }
 
     return render(request,"bankApp/manager/customers.html",context)
@@ -616,7 +620,8 @@ def tellersPage(request):
     context = {
         "Tellers":BankUser.objects.filter(bankrole="2"),
         "tellers":"active",
-        "user":request.user
+        "user":request.user,
+        "jess_settings": JessSettings.objects.get(pk=1)
     }
 
     return render(request,"bankApp/manager/tellers.html",context)
@@ -628,7 +633,8 @@ def newTeller(request):
         return render(request,'bankApp/login.html',{"message":None})
 
     context = {
-        "user":request.user
+        "user":request.user,
+        "jess_settings": JessSettings.objects.get(pk=1)
     }
 
     return render(request,"bankApp/manager/newTeller.html",context)
@@ -643,11 +649,27 @@ def createTeller(request):
     context = {
         "accountTypes":AccountType.objects.all(),
         "home":"active",
-        "user":request.user
+        "user":request.user,
+        "jess_settings": JessSettings.objects.get(pk=1)
     }
 
     return render(request,"bankApp/manager/newCustomer.html",context)        
 
+
+def update_jess_settings(request):
+    number_of_transactions_per_day = request.POST['no_of_transactions_limit']
+    rule_one_rank = request.POST['rule_one_rank']
+    rule_two_rank = request.POST['rule_two_rank']
+    rule_third_rank = request.POST['rule_three_rank']
+    # Get the settings object
+    jess_settings = JessSettings.objects.get(pk=1)
+    jess_settings.no_of_transactions_limit = int(number_of_transactions_per_day)
+    jess_settings.rule_one_rank = int(rule_one_rank)
+    jess_settings.rule_two_rank = int(rule_two_rank)
+    jess_settings.rule_three_rank = int(rule_third_rank)
+    jess_settings.save()
+    return HttpResponseRedirect(reverse('homePage'))
+    
         
            
            
