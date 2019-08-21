@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from .models import Transaction,Transactiontype
 import datetime
 
@@ -30,7 +32,7 @@ def generateLimit(bankAccount,transID):
 def generateDifferent(bankAccount,transID):
     Trans = Transactiontype.objects.get(pk=1)
     # All transactions for the bank Account today    
-    today_filter = Transaction.objects.filter(account=bankAccount, DateTime=datetime.date.today()).exclude(transactiontype=Trans)
+    today_filter = Transaction.objects.filter(account=bankAccount, Date=timezone.now()).exclude(transactiontype=Trans)
     
     if today_filter:
         different = "yes"
@@ -43,5 +45,5 @@ def generateDifferent(bankAccount,transID):
 # This function generates the number of transactions 
 # per day                
 def generateAverageNumberOfTrans(bankAccount,transID):
-    numberOfTrans = Transaction.objects.filter(account=bankAccount, DateTime=datetime.date.today()).count()
+    numberOfTrans = Transaction.objects.filter(account=bankAccount, Date=timezone.now()).count()
     return numberOfTrans

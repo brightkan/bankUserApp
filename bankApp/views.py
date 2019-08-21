@@ -4,6 +4,8 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone
+
 from .models import AccountType,Customer,Account,Branch,Transaction,Transactiontype,BankUser,JessSettings
 from django.db.models import Avg, Max, Min, Sum
 import datetime
@@ -260,7 +262,7 @@ def initiateWithdraw(request):
                 #Get a transaction of withdraw
                 withdrawTrans = Transactiontype.objects.get(pk=1)
                 bankUser = BankUser.objects.get(pk=bankUserID)
-                transaction = Transaction(bankUser=bankUser, account=bankAccount,DateTime=datetime.date.today(),amount=amount,transactiontype=withdrawTrans, creditdebit=1)
+                transaction = Transaction(bankUser=bankUser, account=bankAccount,Date=timezone.now(),amount=amount,transactiontype=withdrawTrans, creditdebit=1)
               
                 #Saving the transaction to the database
                 transaction.save()
@@ -395,7 +397,7 @@ def initiateDeposit(request):
            #Get a transactiontype object of deposit
            depositTrans = Transactiontype.objects.get(pk=2)
            bankUser = BankUser.objects.get(pk=bankUserID)
-           transaction = Transaction(bankUser=bankUser, account=bankAccount,DateTime=datetime.date.today(),amount=amount,transactiontype=depositTrans, creditdebit=0)
+           transaction = Transaction(bankUser=bankUser, account=bankAccount,Date=timezone.now(),amount=amount,transactiontype=depositTrans, creditdebit=0)
            #Saving the transaction to the database
            transaction.save()
         
@@ -545,11 +547,11 @@ def initiateTransfer(request):
                 transferTrans = Transactiontype.objects.get(pk=3)
                 bankUser = BankUser.objects.get(pk=bankUserID)
                 # Create send transaction
-                sendertransaction = Transaction(bankUser=bankUser, account=senderAccount,DateTime=datetime.date.today(),amount=amount,transactiontype=transferTrans, creditdebit=1)
+                sendertransaction = Transaction(bankUser=bankUser, account=senderAccount,Date=timezone.now(),amount=amount,transactiontype=transferTrans, creditdebit=1)
                 #Saving the transaction to the database
                 sendertransaction.save()
                 # Create recieve transaction
-                recievertransaction = Transaction(bankUser=bankUser, account=recieverAccount,DateTime=datetime.date.today(),amount=amount,transactiontype=transferTrans, creditdebit=0)
+                recievertransaction = Transaction(bankUser=bankUser, account=recieverAccount,Date=timezone.now(),amount=amount,transactiontype=transferTrans, creditdebit=0)
                 #Saving the transaction to the database
                 recievertransaction.save()
            

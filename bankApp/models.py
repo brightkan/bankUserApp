@@ -97,7 +97,7 @@ class Transaction(models.Model):
     # Attributes of transaction
     bankUser = models.ForeignKey(BankUser,blank=True)
     account = models.ForeignKey(Account)
-    DateTime = models.DateTimeField()
+    Date = models.DateField(default=django.utils.timezone.now)
     amount = models.IntegerField()
     transactiontype = models.ForeignKey(Transactiontype)
     creditdebit = models.CharField(max_length=1)
