@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+import django.utils.timezone
 from django.contrib.auth.models import User
 from django.db import models
 import datetime
@@ -46,7 +48,7 @@ class Customer(models.Model):
     email = models.CharField(max_length=20)
     mobile = models.CharField(max_length=20)
     sex = models.CharField(max_length=10)
-    dateOfBirth = models.DateField(default= datetime.date.today(), blank=True, null=True)
+    dateOfBirth = models.DateField(default= django.utils.timezone.now, blank=True, null=True)
     idNumber = models.IntegerField(default=0, blank=True)
     
     # Return something meaningful

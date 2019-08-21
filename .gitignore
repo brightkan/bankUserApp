@@ -12,3 +12,4 @@ bankApp/migrations/*.pyc
 ~constant.py
 constant.py
 ~/constant.py
+/.vscode/
