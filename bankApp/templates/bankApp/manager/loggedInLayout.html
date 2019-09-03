@@ -93,34 +93,51 @@
           {%csrf_token%}
           <div class="form-group">
             <label for="exampleInputEmail1">Number of transactions per day</label>
-            <input type="number" class="form-control" 
-              placeholder="Enter the number of transactions per day" value='{{jess_settings.no_of_transactions_limit}}' name = "no_of_transactions_limit" required>
-            <small id="emailHelp" class="form-text text-muted">These are the number of transactions Jess allows per day.</small>
+            <input type="number" class="form-control" placeholder="Enter the number of transactions per day"
+              value='{{jess_settings.no_of_transactions_limit}}' name="no_of_transactions_limit" required>
+            <small id="emailHelp" class="form-text text-muted">These are the number of transactions Jess allows per
+              day.</small>
           </div>
           <div class="form-group">
-            <label for="formControlRange">Rule One Rank</label>
-            <input type="range" class="form-control-range" min="0", max="60" value={{jess_settings.rule_one_rank}} name="rule_one_rank">
+            <center>
+              <label for="formControlRange">Rule One Rank</label>
+              <span id="rule1Rank" class="btn btn-success small">20</span>
+              <input type="range" class="form-control-range" min="0" , max="60" value={{jess_settings.rule_one_rank}}
+                name="rule_one_rank" onChange="sliderChange(this.value,'rule1Rank')">
+            </center>
           </div>
+
           <div class="form-group">
-            <label for="formControlRange">Rule Two Rank</label>
-            <input type="range" class="form-control-range" min="0", max="60" value={{jess_settings.rule_two_rank}} name="rule_two_rank">
+            <center>
+              <label for="formControlRange">Rule Two Rank</label>
+              <span id="rule2Rank" class="btn btn-success small">20</span>
+              <input type="range" class="form-control-range" min="0" , max="60" value={{jess_settings.rule_two_rank}}
+                name="rule_two_rank" onChange="sliderChange(this.value,'rule2Rank')">
+            </center>
           </div>
+
           <div class="form-group">
-            <label for="formControlRange">Rule Three Rank</label>
-            <input type="range" class="form-control-range" min="0", max="60" value={{jess_settings.rule_three_rank}} name="rule_three_rank">
+            <center>
+              <label for="formControlRange">Rule Three Rank</label>
+              <span id="rule3Rank" class="btn btn-success small">20</span>
+              <input type="range" class="form-control-range" min="0" , max="60" value={{jess_settings.rule_three_rank}}
+                name="rule_three_rank" onChange="sliderChange(this.value,'rule3Rank')">
+            </center>
           </div>
-          
+
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         <hr>
         <small>Rule 1: The amount in a transaction should not exceed the average amount of transactions</small>
         <br>
-        <small>Rule 2: The number of transactions per day should not exceed the set number of transactions per day</small>
+        <small>Rule 2: The number of transactions per day should not exceed the set number of transactions per
+          day</small>
         <br>
         <small>Rule 3: The client should not perform 2 different transactions on the same day</small>
       </div>
-     
+
     </div>
   </div>
 </div>
+
 {%endblock%}
