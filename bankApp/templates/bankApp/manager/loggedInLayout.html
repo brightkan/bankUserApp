@@ -101,7 +101,7 @@
           <div class="form-group">
             <center>
               <label for="formControlRange">Rule One Rank</label>
-              <span id="rule1Rank" class="btn btn-success small">20</span>
+              <span id="rule1Rank" class="btn btn-success small">{{jess_settings.rule_one_rank}}</span>
               <input type="range" class="form-control-range" min="0" , max="60" value={{jess_settings.rule_one_rank}}
                 name="rule_one_rank" onChange="sliderChange(this.value,'rule1Rank')">
             </center>
@@ -110,7 +110,7 @@
           <div class="form-group">
             <center>
               <label for="formControlRange">Rule Two Rank</label>
-              <span id="rule2Rank" class="btn btn-success small">20</span>
+              <span id="rule2Rank" class="btn btn-success small">{{jess_settings.rule_two_rank}}</span>
               <input type="range" class="form-control-range" min="0" , max="60" value={{jess_settings.rule_two_rank}}
                 name="rule_two_rank" onChange="sliderChange(this.value,'rule2Rank')">
             </center>
@@ -119,7 +119,7 @@
           <div class="form-group">
             <center>
               <label for="formControlRange">Rule Three Rank</label>
-              <span id="rule3Rank" class="btn btn-success small">20</span>
+              <span id="rule3Rank" class="btn btn-success small">{{jess_settings.rule_three_rank}}</span>
               <input type="range" class="form-control-range" min="0" , max="60" value={{jess_settings.rule_three_rank}}
                 name="rule_three_rank" onChange="sliderChange(this.value,'rule3Rank')">
             </center>
