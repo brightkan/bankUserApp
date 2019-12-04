@@ -93,10 +93,10 @@ public class Bright {
 		rankNNP = rule1RankSent+rule2RankSent;
 		rankNPN = rule1RankSent + rule3RankSent;
 		rankNPP = rule1RankSent;
-
+		
 //		Initiate Jess engine
 		engine = new Rete();
-
+		
 //		Store the value from Java in Jess
 		engine.store("AMOUNT", amountSent);
 		engine.store("LIMIT", limitSent);
@@ -110,136 +110,136 @@ public class Bright {
 		engine.store("RANKNNP", rankNNP);
 		engine.store("RANKNPN", rankNPN);
 		engine.store("RANKNPP", rankNPP);
-
+		
 //		Limit with a red flag
-
-		String rule1_P = "(defrule amount-less-than-limit" +
-				"    (amount ?a&:(< ?a (fetch LIMIT)))" +
+		
+		String rule1_P = "(defrule amount-less-than-limit" + 
+				"    (amount ?a&:(< ?a (fetch LIMIT)))" + 
 				"    =>" +
 				"    (assert (ant (fetch ANT)))"+
 				"    (assert (code P))"+
 				")";
-
-		String rule2_PN = "(defrule daily-transaction-limit-is-less" +
-				"    (and (ant ?a&:(>= ?a (fetch TRANSLIMIT))) (code P))" +
-				"    =>" +
-				"     (assert (diff (fetch DIFFERENT)))"+
-				"     (assert (code PN))" +
+		
+		String rule2_PN = "(defrule daily-transaction-limit-is-less" + 
+				"    (and (ant ?a&:(>= ?a (fetch TRANSLIMIT))) (code P))" + 
+				"    =>" + 
+				"     (assert (diff (fetch DIFFERENT)))"+ 
+				"     (assert (code PN))" +  
 				")";
-
-		String rule3_PNN = "(defrule deposit-withdraw-pattern-is-one" +
-				"    (and (diff ?d&:(> ?d 0)) (code PN))" +
-				"    =>" +
+		
+		String rule3_PNN = "(defrule deposit-withdraw-pattern-is-one" + 
+				"    (and (diff ?d&:(> ?d 0)) (code PN))" + 
+				"    =>" + 
 				"    (assert  (rank (fetch RANKPNN))) "+
-
+				
 				")";
-
-		String rule3_PNP = "(defrule deposit-withdraw-pattern-is-zero" +
-				"    (and (diff ?d&:(< ?d 1)) (code PN))" +
-				"    =>" +
-				"    (assert (rank 20)) "+
+		
+		String rule3_PNP = "(defrule deposit-withdraw-pattern-is-zero" + 
+				"    (and (diff ?d&:(< ?d 1)) (code PN))" + 
+				"    =>" + 
+				"    (assert (rank (fetch RANKPNP))) "+
 				")";
-
-
-		String rule2_PP = "(defrule daily-transaction-limit-is-greater" +
-				"    (and (ant ?a&:(< ?a (fetch TRANSLIMIT))) (code P))" +
-				"    =>" +
-				"   (assert (diff (fetch DIFFERENT)))"+
-				"   (assert (code PP))" +
-				"    " +
+		
+		
+		String rule2_PP = "(defrule daily-transaction-limit-is-greater" + 
+				"    (and (ant ?a&:(< ?a (fetch TRANSLIMIT))) (code P))" + 
+				"    =>" + 
+				"   (assert (diff (fetch DIFFERENT)))"+ 
+				"   (assert (code PP))" + 
+				"    " +  
 				")";
-
-		String rule3_PPN = "(defrule deposit-withdraw-pattern-is-one-PPN" +
-				"    (and (diff ?d&:(> ?d 0)) (code PP))" +
-				"    =>" +
+		
+		String rule3_PPN = "(defrule deposit-withdraw-pattern-is-one-PPN" + 
+				"    (and (diff ?d&:(> ?d 0)) (code PP))" + 
+				"    =>" + 
 				"    (assert  (rank (fetch RANKPPN))) "+
 				")";
-
-		String rule3_PPP = "(defrule deposit-withdraw-pattern-is-zero-PPP" +
-				"    (and (diff ?d&:(< ?d 1)) (code PP))" +
-				"    =>" +
+		
+		String rule3_PPP = "(defrule deposit-withdraw-pattern-is-zero-PPP" + 
+				"    (and (diff ?d&:(< ?d 1)) (code PP))" + 
+				"    =>" + 
 				"    (assert (rank 0)) "+
 				")";
-
-		String rule1_N = "(defrule amount-greater-than-limit" +
-				"    (amount ?a&:(> ?a (fetch LIMIT)))" +
-				"    =>" +
+		
+		String rule1_N = "(defrule amount-greater-than-limit" + 
+				"    (amount ?a&:(> ?a (fetch LIMIT)))" + 
+				"    =>" + 
 				"    (assert (ant (fetch ANT)))"+
-				"    (assert (code N))"+
+				"    (assert (code N))"+ 
 				")";
-
-		String rule2_NN = "(defrule daily-transaction-limit-is-greater-NN" +
-				"    (and (ant ?a&:(>= ?a (fetch TRANSLIMIT))) (code N))" +
-				"    =>" +
-				"     (assert (diff (fetch DIFFERENT)))"+
-				"     (assert (code NN))" +
+		
+		String rule2_NN = "(defrule daily-transaction-limit-is-greater-NN" + 
+				"    (and (ant ?a&:(>= ?a (fetch TRANSLIMIT))) (code N))" + 
+				"    =>" + 
+				"     (assert (diff (fetch DIFFERENT)))"+ 
+				"     (assert (code NN))" +  
 				")";
-
-		String rule3_NNN = "(defrule deposit-withdraw-pattern-is-one-NNN" +
-				"    (and (diff ?d&:(> ?d 0)) (code NN))" +
-				"    =>" +
+		
+		String rule3_NNN = "(defrule deposit-withdraw-pattern-is-one-NNN" + 
+				"    (and (diff ?d&:(> ?d 0)) (code NN))" + 
+				"    =>" + 
 				"    (assert  (rank (fetch RANKNNN))) "+
-
+				
 				")";
-
-		String rule3_NNP = "(defrule deposit-withdraw-pattern-is-zero-NNP" +
-				"    (and (diff ?d&:(< ?d 1)) (code NN))" +
-				"    =>" +
+		
+		String rule3_NNP = "(defrule deposit-withdraw-pattern-is-zero-NNP" + 
+				"    (and (diff ?d&:(< ?d 1)) (code NN))" + 
+				"    =>" + 
 				"    (assert  (rank (fetch RANKNNP))) "+
 				")";
-
-
-		String rule2_NP = "(defrule daily-transaction-limit-is-less-NP" +
-				"    (and (ant ?a&:(< ?a (fetch TRANSLIMIT))) (code N))" +
-				"    =>" +
-				"     (assert (diff (fetch DIFFERENT)))"+
-				"     (assert (code NP))" +
+		
+		
+		String rule2_NP = "(defrule daily-transaction-limit-is-less-NP" + 
+				"    (and (ant ?a&:(< ?a (fetch TRANSLIMIT))) (code N))" + 
+				"    =>" + 
+				"     (assert (diff (fetch DIFFERENT)))"+ 
+				"     (assert (code NP))" +  
 				")";
-
-		String rule3_NPN = "(defrule deposit-withdraw-pattern-is-one-NPN" +
-				"    (and (diff ?d&:(> ?d 0)) (code NP))" +
-				"    =>" +
+		
+		String rule3_NPN = "(defrule deposit-withdraw-pattern-is-one-NPN" + 
+				"    (and (diff ?d&:(> ?d 0)) (code NP))" + 
+				"    =>" + 
 				"    (assert  (rank (fetch RANKNPN))) "+
-
+				
 				")";
-
-		String rule3_NPP = "(defrule deposit-withdraw-pattern-is-zero-NPP" +
-				"    (and (diff ?d&:(< ?d 1)) (code NP))" +
-				"    =>" +
+		
+		String rule3_NPP = "(defrule deposit-withdraw-pattern-is-zero-NPP" + 
+				"    (and (diff ?d&:(< ?d 1)) (code NP))" + 
+				"    =>" + 
 				"    (assert  (rank (fetch RANKNPP))) "+
-
+				
 				")";
-
-
-		String ruleRisk= "(defrule risk-is-low" +
-		"    (rank ?a&:(<= ?a 20))" +
-		"    =>" +
+		
+		
+		String ruleRisk= "(defrule risk-is-low" + 
+		"    (rank ?a&:(<= ?a 20))" + 
+		"    =>" + 
 		"    (store  RESULT \"<resMsg>Jess says the risk is low</resMsg>"
-		+ "<continue>true</continue>\")" +
-		"    " +
+		+ "<continue>true</continue>\")" + 
+		"    " +  
 		")";
-
-		String ruleRisk1 = "(defrule risk-is-medium" +
-				"    (and (rank ?a&:(> ?a 20)) (rank ?a&:(< ?a 40)))" +
-				"    =>" +
+		
+		String ruleRisk1 = "(defrule risk-is-medium" + 
+				"    (and (rank ?a&:(> ?a 20)) (rank ?a&:(< ?a 40)))" + 
+				"    =>" + 
 				"    (store  RESULT \"<resMsg>Jess says the risk is medium</resMsg>"
-				+ "<continue>false</continue>\")" +
-				"    " +
+				+ "<continue>false</continue>\")" + 
+				"    " +  
 				")";
-
-		String ruleRisk2 = "(defrule risk-is-high" +
-				"    (rank ?a&:(>= ?a 40))" +
-				"    =>" +
+		
+		String ruleRisk2 = "(defrule risk-is-high" + 
+				"    (rank ?a&:(>= ?a 40))" + 
+				"    =>" + 
 				"    (store  RESULT \"<resMsg>Jess says the risk is high</resMsg>"
-				+ "<continue>false</continue>\")" +
-				"    " +
+				+ "<continue>false</continue>\")" + 
+				"    " +  
 				")";
-
-
+		
+	
 		//Create a fact and assert it
-
+		
 		try {
-//
+//			
 			engine.executeCommand("(assert (amount (fetch AMOUNT)))");
 			engine.executeCommand(rule1_P);
 			engine.executeCommand(rule2_PN);
@@ -261,30 +261,30 @@ public class Bright {
 			engine.executeCommand("(run)");
 			Value resValue = engine.fetch("RESULT");
 		    result = resValue.stringValue(engine.getGlobalContext());
-
-
+		    
+		 
 		} catch (JessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return "<data>"+result+"</data>";
+		
+		return "<data>"+result+"</data>";	        
 
 				//CheckJess function ends here
 				}
-
+	
 	private String getCharacterDataFromElement(Element e){
 		// TODO Auto-generated method stub
-
-
+	
+		
 		Node child = e.getFirstChild();
         if (child instanceof CharacterData) {
            CharacterData cd = (CharacterData) child;
            return cd.getData();
         }
         return "?";
-
+		
 	}
-
+	
 
 }
