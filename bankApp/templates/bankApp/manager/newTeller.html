@@ -10,7 +10,7 @@
                 <h2 class="h6 text-uppercase mb-0">New Teller</h2>
               </div>
               <div class="card-body">
-                    <form action={%url 'createCustomer'%} method="post" class="form-horizontal">
+                    <form action={%url 'createTeller'%} method="post" class="form-horizontal">
                             {%csrf_token%}
                             <div class="form-group row">
                               <label class="col-md-3 form-control-label">First Name</label>
@@ -30,6 +30,20 @@
                               <label class="col-md-3 form-control-label">Last Name</label>
                               <div class="col-md-9">
                                 <input id="inputHorizontalSuccess" name="lastName" type="text" placeholder="Enter last name" class="form-control form-control-success" required><small class="form-text text-muted ml-3">Example Doe</small>
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label class="col-md-3 form-control-label">Username</label>
+                              <div class="col-md-9">
+                                <input id="inputHorizontalSuccess" name="username" type="text" placeholder="Enter username" class="form-control form-control-success" required><small class="form-text text-muted ml-3">Username must be unique</small>
+                              </div>
+                            </div>
+
+                           <div class="form-group row">
+                              <label class="col-md-3 form-control-label">Initial Password</label>
+                              <div class="col-md-9">
+                                <input id="inputHorizontalSuccess" name="initial_password" type="text" placeholder="Enter initial password" class="form-control form-control-success" required><small class="form-text text-muted ml-3">Example Doe</small>
                               </div>
                             </div>
 
