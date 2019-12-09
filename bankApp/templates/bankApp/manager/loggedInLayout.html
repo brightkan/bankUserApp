@@ -1,22 +1,41 @@
-{% extends '../layout.html'%}
-{% load staticfiles %}
-{%block body%}
+{% extends '../layout.html'%} {% load staticfiles %} {%block body%}
 <!-- navbar-->
 <header class="header">
-  <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a href="#"
-      class="sidebar-toggler text-gray-500 mr-4 mr-lg-5 lead"><i class="fas fa-align-left"></i></a><a href="index.html"
-      class="navbar-brand font-weight-bold text-uppercase text-base">Bank Application</a>
+  <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow">
+    <a href="#" class="sidebar-toggler text-gray-500 mr-4 mr-lg-5 lead"
+      ><i class="fas fa-align-left"></i></a
+    ><a
+      href="index.html"
+      class="navbar-brand font-weight-bold text-uppercase text-base"
+      >Bank Application</a
+    >
     <ul class="ml-auto d-flex align-items-center list-unstyled mb-0">
-      <li class="nav-item dropdown ml-auto"><a id="userInfo" href="http://example.com" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle"><i
-            class="o-user-1 mr-3 text-gray"></i></a>
-        <div aria-labelledby="userInfo" class="dropdown-menu"><a href="#" class="dropdown-item"><strong
-              class="d-block text-uppercase headings-font-family">{{user.first_name}} {{user.last_name}}
-            </strong><small>Bank {{user.bankuser.bankrole}}</small></a>
+      <li class="nav-item dropdown ml-auto">
+        <a
+          id="userInfo"
+          href="http://example.com"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="nav-link dropdown-toggle"
+          ><i class="o-user-1 mr-3 text-gray"></i
+        ></a>
+        <div aria-labelledby="userInfo" class="dropdown-menu">
+          <a href="#" class="dropdown-item"
+            ><strong class="d-block text-uppercase headings-font-family"
+              >{{user.first_name}} {{user.last_name}} </strong
+            ><small>Bank {{user.bankuser.bankrole}}</small></a
+          >
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" data-toggle="modal" data-target="#settingsModal">Settings</a>
+          <a
+            class="dropdown-item"
+            data-toggle="modal"
+            data-target="#settingsModal"
+            >Settings</a
+          >
           <a href="#" class="dropdown-item">Activity log </a>
-          <div class="dropdown-divider"></div><a href="{%url 'logout'%}" class="dropdown-item">Logout</a>
+          <div class="dropdown-divider"></div>
+          <a href="{%url 'logout'%}" class="dropdown-item">Logout</a>
         </div>
       </li>
     </ul>
@@ -27,20 +46,38 @@
 <!-- SIDEBAR STARTS HERE -->
 <div class="d-flex align-items-stretch">
   <div id="sidebar" class="sidebar py-3">
-    <div class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family">MAIN</div>
+    <div
+      class="text-gray-400 text-uppercase px-3 px-lg-4 py-4 font-weight-bold small headings-font-family"
+    >
+      MAIN
+    </div>
     <ul class="sidebar-menu list-unstyled">
-      <li class="sidebar-list-item"><a href="{% url 'homePage' %}" class="sidebar-link text-muted {{home}}"><i
-            class="o-home-1 mr-3 text-gray"></i><span>Home</span></a></li>
-      <li class="sidebar-list-item"><a href="{% url 'customersPage' %}"
-          class="sidebar-link text-muted {{customers}} "><i
-            class="fa fa-address-card mr-3 text-gray"></i><span>Customers</span></a></li>
-      <li class="sidebar-list-item"><a href="{% url 'tellersPage'%}" class="sidebar-link text-muted {{tellers}}"><i
-            class="fa fa-users mr-3 text-gray"></i><span>Tellers</span></a></li>
-      <li class="sidebar-list-item"><a href="{% url 'logout' %}" class="sidebar-link text-muted"><i
-            class="o-exit-1 mr-3 text-gray"></i><span>Logout</span></a></li>
+      <li class="sidebar-list-item">
+        <a href="{% url 'homePage' %}" class="sidebar-link text-muted {{home}}"
+          ><i class="o-home-1 mr-3 text-gray"></i><span>Home</span></a
+        >
+      </li>
+      <li class="sidebar-list-item">
+        <a
+          href="{% url 'customersPage' %}"
+          class="sidebar-link text-muted {{customers}} "
+          ><i class="fa fa-address-card mr-3 text-gray"></i
+          ><span>Customers</span></a
+        >
+      </li>
+      <li class="sidebar-list-item">
+        <a
+          href="{% url 'tellersPage'%}"
+          class="sidebar-link text-muted {{tellers}}"
+          ><i class="fa fa-users mr-3 text-gray"></i><span>Tellers</span></a
+        >
+      </li>
+      <li class="sidebar-list-item">
+        <a href="{% url 'logout' %}" class="sidebar-link text-muted"
+          ><i class="o-exit-1 mr-3 text-gray"></i><span>Logout</span></a
+        >
+      </li>
     </ul>
-
-
   </div>
 
   <!-- SIDEBAR ENDS HERE -->
@@ -49,14 +86,7 @@
     <div class="container-fluid px-xl-5">
       <!-- SECTIONS PUT HERE -->
       <!-- ALL SECTIONS HAVE A CLASS OF 'py-5' -->
-      {%block sections%}
-      {%endblock%}
-
-
-
-
-
-
+      {%block sections%} {%endblock%}
     </div>
 
     <!-- FOOTER BEGINS HERE -->
@@ -68,7 +98,6 @@
           </div>
           <div class="col-md-6 text-center text-md-right text-gray-400">
             <p class="mb-0">Design by Kiwanuka Patrick</p>
-
           </div>
         </div>
       </div>
@@ -76,15 +105,25 @@
   </div>
 </div>
 
-
 <!-- Modal -->
-<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-  aria-hidden="true">
+<div
+  class="modal fade"
+  id="settingsModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Jess Settings</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -92,50 +131,96 @@
         <form action="{%url 'update_jess_settings'%}" method="POST">
           {%csrf_token%}
           <div class="form-group">
-            <label for="exampleInputEmail1">Number of transactions per day</label>
-            <input type="number" class="form-control" placeholder="Enter the number of transactions per day"
-              value='{{jess_settings.no_of_transactions_limit}}' name="no_of_transactions_limit" required>
-            <small id="emailHelp" class="form-text text-muted">These are the number of transactions Jess allows per
-              day.</small>
+            <label for="exampleInputEmail1"
+              >Number of transactions per day</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              placeholder="Enter the number of transactions per day"
+              value="{{jess_settings.no_of_transactions_limit}}"
+              name="no_of_transactions_limit"
+              required
+            />
+            <small id="emailHelp" class="form-text text-muted"
+              >These are the number of transactions Jess allows per day.</small
+            >
           </div>
           <div class="form-group">
             <center>
               <label for="formControlRange">Rule One Rank</label>
-              <span id="rule1Rank" class="btn btn-success small">20</span>
-              <input type="range" class="form-control-range" min="0" , max="60" value={{jess_settings.rule_one_rank}}
-                name="rule_one_rank" onChange="sliderChange(this.value,'rule1Rank')">
+              <span id="rule1Rank" class="btn btn-success small"
+                >{{jess_settings.rule_one_rank}}</span
+              >
+              <input
+                type="range"
+                class="form-control-range"
+                min="0"
+                ,
+                max="60"
+                value="{{jess_settings.rule_one_rank}}"
+                name="rule_one_rank"
+                onChange="sliderChange(this.value,'rule1Rank')"
+              />
             </center>
           </div>
 
           <div class="form-group">
             <center>
               <label for="formControlRange">Rule Two Rank</label>
-              <span id="rule2Rank" class="btn btn-success small">20</span>
-              <input type="range" class="form-control-range" min="0" , max="60" value={{jess_settings.rule_two_rank}}
-                name="rule_two_rank" onChange="sliderChange(this.value,'rule2Rank')">
+              <span id="rule2Rank" class="btn btn-success small"
+                >{{jess_settings.rule_two_rank}}</span
+              >
+              <input
+                type="range"
+                class="form-control-range"
+                min="0"
+                ,
+                max="60"
+                value="{{jess_settings.rule_two_rank}}"
+                name="rule_two_rank"
+                onChange="sliderChange(this.value,'rule2Rank')"
+              />
             </center>
           </div>
 
           <div class="form-group">
             <center>
               <label for="formControlRange">Rule Three Rank</label>
-              <span id="rule3Rank" class="btn btn-success small">20</span>
-              <input type="range" class="form-control-range" min="0" , max="60" value={{jess_settings.rule_three_rank}}
-                name="rule_three_rank" onChange="sliderChange(this.value,'rule3Rank')">
+              <span id="rule3Rank" class="btn btn-success small"
+                >{{jess_settings.rule_three_rank}}</span
+              >
+              <input
+                type="range"
+                class="form-control-range"
+                min="0"
+                ,
+                max="60"
+                value="{{jess_settings.rule_three_rank}}"
+                name="rule_three_rank"
+                onChange="sliderChange(this.value,'rule3Rank')"
+              />
             </center>
           </div>
 
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-        <hr>
-        <small>Rule 1: The amount in a transaction should not exceed the average amount of transactions</small>
-        <br>
-        <small>Rule 2: The number of transactions per day should not exceed the set number of transactions per
-          day</small>
-        <br>
-        <small>Rule 3: The client should not perform 2 different transactions on the same day</small>
+        <hr />
+        <small
+          >Rule 1: The amount in a transaction should not exceed the average
+          amount of transactions</small
+        >
+        <br />
+        <small
+          >Rule 2: The number of transactions per day should not exceed the set
+          number of transactions per day</small
+        >
+        <br />
+        <small
+          >Rule 3: The client should not perform 2 different transactions on the
+          same day</small
+        >
       </div>
-
     </div>
   </div>
 </div>
