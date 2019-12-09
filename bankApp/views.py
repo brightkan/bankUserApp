@@ -274,8 +274,8 @@ def initiateWithdraw(request):
                 transaction.save()
 
                 # Setting a success message
-                successMsg = 'You have successfully initiated the withdraw of UGX {}. The balance of account {} is UGX {}'.format(
-                    amount, bankAccount, bankAccount.balance)
+                successMsg = 'You have successfully initiated the withdraw of UGX {}. The balance of account {} is UGX {}. {}'.format(
+                    amount, bankAccount, bankAccount.balance, jessApproval.resMsg)
                 context = {
                     'successMsg': successMsg
                 }
@@ -412,8 +412,8 @@ def initiateDeposit(request):
             transaction.save()
 
             # Setting a success message
-            successMsg = 'You have successfully initiated the deposit of UGX {}. The balance of account {} is UGX {}'.format(
-                amount, bankAccount, bankAccount.balance)
+            successMsg = 'You have successfully initiated the deposit of UGX {}. The balance of account {} is UGX {}. {}'.format(
+                amount, bankAccount, bankAccount.balance, jessApproval.resMsg)
             context = {
                 'successMsg': successMsg
             }
@@ -567,8 +567,9 @@ def initiateTransfer(request):
                 recievertransaction.save()
 
                 # Setting a success message
-                successMsg = 'You have successfully initiated the transfer of  UGX {} from {} to {}. The balance of account {} is UGX {}'.format(
-                    amount, senderAccount, recieverAccount, senderAccount, senderAccount.balance)
+                successMsg = 'You have successfully initiated the transfer of  UGX {} from {} to {}. The balance of ' \
+                             'account {} is UGX {}. {}'.format(
+                    amount, senderAccount, recieverAccount, senderAccount, senderAccount.balance, jessApproval.resMsg)
                 context = {
                     'successMsg': successMsg
                 }

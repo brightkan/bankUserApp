@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db import models
 import datetime
 
+
 # Create your models here.
 class Branch(models.Model):
     # Branch attributes
@@ -17,14 +18,16 @@ class Branch(models.Model):
 
     # Return something meaningful
     def __str__(self):
-        return '{} branch'.format(self.name) 
+        return '{} branch'.format(self.name)
+
 
 class BankRole(models.Model):
-    #Bank role attributes
+    # Bank role attributes
     name = models.CharField(max_length=20)
 
     def __str__(self):
         return self.name
+
 
 class BankUser(models.Model):
     # This line is required. Links BankUser to a User model instance
@@ -33,10 +36,10 @@ class BankUser(models.Model):
     middleName = models.CharField(max_length=20, blank=True)
     bankrole = models.ForeignKey(BankRole)
     branch = models.ForeignKey(Branch)
-    
+
     # Return something meaningful
     def __str__(self):
-        return '{} {} {}'.format(self.user.first_name,self.middleName,self.user.last_name)
+        return '{} {} {}'.format(self.user.first_name, self.middleName, self.user.last_name)
 
 
 class Customer(models.Model):
@@ -48,17 +51,16 @@ class Customer(models.Model):
     email = models.CharField(max_length=20)
     mobile = models.CharField(max_length=20)
     sex = models.CharField(max_length=10)
-    dateOfBirth = models.DateField(default= django.utils.timezone.now, blank=True, null=True)
+    dateOfBirth = models.DateField(default=django.utils.timezone.now, blank=True, null=True)
     idNumber = models.IntegerField(default=0, blank=True)
-    
+
     # Return something meaningful
     def __str__(self):
-        return '{} {} {}'.format(self.firstName,self.middleName,self.lastName) 
-
+        return '{} {} {}'.format(self.firstName, self.middleName, self.lastName)
 
 
 class AccountType(models.Model):
-    #Attributes of account type
+    # Attributes of account type
     name = models.CharField(max_length=20)
     desc = models.TextField()
 
@@ -66,16 +68,18 @@ class AccountType(models.Model):
     def __str__(self):
         return self.name
 
+
 class Account(models.Model):
     # Attributes of the account
-    customer = models.OneToOneField(Customer,on_delete=models.CASCADE)
-    accountType = models.ForeignKey(AccountType,default=1)
+    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
+    accountType = models.ForeignKey(AccountType, default=1)
     branchOfReg = models.ForeignKey(Branch, blank=True)
     balance = models.IntegerField(default=0)
 
     # Return something meaningful
     def __str__(self):
-        return '{} : {}'.format(self.id,self.customer) 
+        return '{} : {}'.format(self.id, self.customer)
+
 
 class Transactiontype(models.Model):
     name = models.CharField(max_length=20)
@@ -84,27 +88,30 @@ class Transactiontype(models.Model):
     def __str__(self):
         return self.name
 
-class Transfer(models.Model):  
-    sender = models.ForeignKey(Account,related_name='reciever')
-    reciever = models.ForeignKey(Account,related_name='sender')
+
+class Transfer(models.Model):
+    sender = models.ForeignKey(Account, related_name='reciever')
+    reciever = models.ForeignKey(Account, related_name='sender')
 
     # Return something meaningful
     def __str__(self):
-        return '{} to {}'.format(self.sender,self.reciever)
-    
+        return '{} to {}'.format(self.sender, self.reciever)
+
 
 class Transaction(models.Model):
     # Attributes of transaction
-    bankUser = models.ForeignKey(BankUser,blank=True)
+    bankUser = models.ForeignKey(BankUser, blank=True)
     account = models.ForeignKey(Account)
     Date = models.DateField(default=django.utils.timezone.now)
     amount = models.IntegerField()
     transactiontype = models.ForeignKey(Transactiontype)
     creditdebit = models.CharField(max_length=1)
-    transfer  = models.ForeignKey(Transfer, on_delete=models.CASCADE,blank=True,default=0) 
+    transfer = models.ForeignKey(Transfer, on_delete=models.CASCADE, blank=True, default=0)
+
     # Return something meaningful
     def __str__(self):
-        return 'Account:{} _ trans:{}_amount:{}_time:{}'.format(self.account,self.transactiontype,self.amount,self.DateTime)
+        return 'Account:{} _ trans:{}_amount:{}_time:{}'.format(self.account, self.transactiontype, self.amount,
+                                                                self.DateTime)
 
 
 class JessSettings(models.Model):
@@ -112,6 +119,3 @@ class JessSettings(models.Model):
     rule_one_rank = models.IntegerField(default=20)
     rule_two_rank = models.IntegerField(default=20)
     rule_three_rank = models.IntegerField(default=20)
-    
-
-
