@@ -376,24 +376,24 @@ def initiateDeposit(request):
         # Generate number of transactions per day
         numOfTrans = generateAverageNumberOfTrans(bankAccount, 2)
 
-        # The Withdraw transaction processing
-        if amount < balance:
-            # Get Jess approval
-            jessApproval = JessApproval(amount)
-            jessApproval.setLimit(limit)
-            jessApproval.setDifferent(different)
-            jessApproval.setNumOfTrans(numOfTrans)
-            try:
-                # Perform a post request to the server
-                jessApproval.perform_request()
-            except:
-                context = {
-                    "failedMsg": jessApproval.resMsg
-                }
-                return render(request, "bankApp/teller/failed.html", context)
+        # The Deposit transaction processing
 
-            permit = jessApproval.permit
-            # permit determines whether the app should continue to commit the transaction
+        # Get Jess approval
+        jessApproval = JessApproval(amount)
+        jessApproval.setLimit(limit)
+        jessApproval.setDifferent(different)
+        jessApproval.setNumOfTrans(numOfTrans)
+        try:
+            # Perform a post request to the server
+            jessApproval.perform_request()
+        except:
+            context = {
+                "failedMsg": jessApproval.resMsg
+            }
+            return render(request, "bankApp/teller/failed.html", context)
+
+        permit = jessApproval.permit
+        # permit determines whether the app should continue to commit the transaction
 
         # permit determines whether the app should continue to commit the transaction 
         if permit == 'true':
