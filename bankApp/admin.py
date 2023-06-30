@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from models import Branch,BankUser,BankRole,Customer,Account,AccountType,Transaction,Transactiontype,Transfer,JessSettings
+from bankApp.models import Branch, BankUser, BankRole, Customer, Account, AccountType, Transaction, Transactiontype, \
+    Transfer, JessSettings
+
 # Register your models here.
 
 admin.site.register(Branch)

@@ -31,11 +31,11 @@ class BankRole(models.Model):
 
 class BankUser(models.Model):
     # This line is required. Links BankUser to a User model instance
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     # The additional attributes we wish to include
     middleName = models.CharField(max_length=20, blank=True)
-    bankrole = models.ForeignKey(BankRole)
-    branch = models.ForeignKey(Branch)
+    bankrole = models.ForeignKey(BankRole, on_delete=models.CASCADE)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
 
     # Return something meaningful
     def __str__(self):
@@ -72,8 +72,8 @@ class AccountType(models.Model):
 class Account(models.Model):
     # Attributes of the account
     customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
-    accountType = models.ForeignKey(AccountType, default=1)
-    branchOfReg = models.ForeignKey(Branch, blank=True)
+    accountType = models.ForeignKey(AccountType, default=1, on_delete=models.CASCADE)
+    branchOfReg = models.ForeignKey(Branch, blank=True, on_delete=models.CASCADE)
     balance = models.IntegerField(default=0)
 
     # Return something meaningful
@@ -90,8 +90,8 @@ class Transactiontype(models.Model):
 
 
 class Transfer(models.Model):
-    sender = models.ForeignKey(Account, related_name='reciever')
-    reciever = models.ForeignKey(Account, related_name='sender')
+    sender = models.ForeignKey(Account, related_name='reciever', on_delete=models.CASCADE)
+    reciever = models.ForeignKey(Account, related_name='sender', on_delete=models.CASCADE)
 
     # Return something meaningful
     def __str__(self):
@@ -100,11 +100,11 @@ class Transfer(models.Model):
 
 class Transaction(models.Model):
     # Attributes of transaction
-    bankUser = models.ForeignKey(BankUser, blank=True)
-    account = models.ForeignKey(Account)
+    bankUser = models.ForeignKey(BankUser, blank=True, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
     Date = models.DateField(default=django.utils.timezone.now)
     amount = models.IntegerField()
-    transactiontype = models.ForeignKey(Transactiontype)
+    transactiontype = models.ForeignKey(Transactiontype, on_delete=models.CASCADE)
     creditdebit = models.CharField(max_length=1)
     transfer = models.ForeignKey(Transfer, on_delete=models.CASCADE, blank=True, default=0)
 
